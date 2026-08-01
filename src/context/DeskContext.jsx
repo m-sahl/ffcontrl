@@ -2,17 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../convexApi";
 
-const INITIAL_PROGRAMS = [
-  { id: "p-101", name: "Malayalam Elocution", category: "Senior", session: "Stage", date: "Day 1", type: "Single", status: "Upcoming", criteria: ["Fluency", "Content", "Body Language"] },
-  { id: "p-102", name: "Qur'an Recitation", category: "Junior", session: "Stage", date: "Day 1", type: "Single", status: "Upcoming", criteria: ["Tajweed", "Melody", "Pronunciation"] },
-  { id: "p-103", name: "Group Song (Islamic)", category: "Senior", session: "Stage", date: "Day 1", type: "Group", status: "Upcoming", criteria: ["Rhythm", "Harmony", "Lyrics"] },
-  { id: "p-104", name: "Islamic Quiz", category: "General", session: "Stage", date: "Day 2", type: "Single", status: "Upcoming", criteria: ["Accuracy", "Speed"] },
-  { id: "p-105", name: "English Speech", category: "Sub-Junior", session: "Stage", date: "Day 2", type: "Single", status: "Upcoming", criteria: ["Pronunciation", "Expression", "Clarity"] },
-  { id: "p-106", name: "English Essay Writing", category: "Junior", session: "Off-Stage", date: "Day 1", type: "Single", status: "Upcoming", criteria: ["Grammar", "Structure", "Creativity"] },
-  { id: "p-107", name: "Pencil Drawing", category: "Sub-Junior", session: "Off-Stage", date: "Day 1", type: "Single", status: "Upcoming", criteria: ["Shading", "Proportion", "Neatness"] },
-  { id: "p-108", name: "Calligraphy", category: "Senior", session: "Off-Stage", date: "Day 2", type: "Single", status: "Upcoming", criteria: ["Style", "Precision", "Flow"] },
-  { id: "p-109", name: "Water Color Painting", category: "General", session: "Off-Stage", date: "Day 2", type: "Single", status: "Upcoming", criteria: ["Color Mixing", "Theme", "Artistry"] }
-];
+const INITIAL_PROGRAMS = [];
 
 const INITIAL_GROUPS = [
   { id: "g-1", name: "Al-Bairaq", color: "#6c63ff" },
@@ -21,96 +11,9 @@ const INITIAL_GROUPS = [
   { id: "g-4", name: "Al-Nujoom", color: "#34d399" }
 ];
 
-const INITIAL_STUDENTS = {
-  "g-1": [
-    { id: "st-101", name: "Muhammed Safwan", chestNo: "301", category: "Senior" },
-    { id: "st-102", name: "Ameen Faisal", chestNo: "201", category: "Junior" },
-    { id: "st-103", name: "Bilal Ahmed", chestNo: "101", category: "Sub-Junior" },
-    { id: "st-104", name: "Hamza Riaz", chestNo: "305", category: "Senior" },
-    { id: "st-105", name: "Salman Faris", chestNo: "205", category: "Junior" },
-    { id: "st-106", name: "Nu'man Basheer", chestNo: "105", category: "Sub-Junior" }
-  ],
-  "g-2": [
-    { id: "st-201", name: "Rashid Khan", chestNo: "302", category: "Senior" },
-    { id: "st-202", name: "Zayan Ali", chestNo: "202", category: "Junior" },
-    { id: "st-203", name: "Hamdan Nizam", chestNo: "102", category: "Sub-Junior" },
-    { id: "st-204", name: "Omar Mukhtar", chestNo: "306", category: "Senior" },
-    { id: "st-205", name: "Anas Bin Malik", chestNo: "206", category: "Junior" },
-    { id: "st-206", name: "Ayman Zaid", chestNo: "106", category: "Sub-Junior" }
-  ],
-  "g-3": [
-    { id: "st-301", name: "Faris Rahman", chestNo: "303", category: "Senior" },
-    { id: "st-302", name: "Rayyan Hassan", chestNo: "203", category: "Junior" },
-    { id: "st-303", name: "Ibrahim Koya", chestNo: "103", category: "Sub-Junior" },
-    { id: "st-304", name: "Luqman Hakim", chestNo: "307", category: "Senior" },
-    { id: "st-305", name: "Zayd Haris", chestNo: "207", category: "Junior" },
-    { id: "st-306", name: "Tariq Jameel", chestNo: "107", category: "Sub-Junior" }
-  ],
-  "g-4": [
-    { id: "st-401", name: "Nihal Mustafa", chestNo: "304", category: "Senior" },
-    { id: "st-402", name: "Danish Zakariya", chestNo: "204", category: "Junior" },
-    { id: "st-403", name: "Yusuf Tariq", chestNo: "104", category: "Sub-Junior" },
-    { id: "st-404", name: "Shamil Usman", chestNo: "308", category: "Senior" },
-    { id: "st-405", name: "Adnan Sami", chestNo: "208", category: "Junior" },
-    { id: "st-406", name: "Mikail Shah", chestNo: "108", category: "Sub-Junior" }
-  ]
-};
+const INITIAL_STUDENTS = {};
 
-const INITIAL_REGISTRATIONS = [
-  // p-101: Malayalam Elocution (Senior)
-  { id: "r-101-1", programId: "p-101", groupId: "g-1", participantIds: ["st-101", "st-104"] },
-  { id: "r-101-2", programId: "p-101", groupId: "g-2", participantIds: ["st-201", "st-204"] },
-  { id: "r-101-3", programId: "p-101", groupId: "g-3", participantIds: ["st-301", "st-304"] },
-  { id: "r-101-4", programId: "p-101", groupId: "g-4", participantIds: ["st-401", "st-404"] },
-  
-  // p-102: Qur'an Recitation (Junior)
-  { id: "r-102-1", programId: "p-102", groupId: "g-1", participantIds: ["st-102", "st-105"] },
-  { id: "r-102-2", programId: "p-102", groupId: "g-2", participantIds: ["st-202", "st-205"] },
-  { id: "r-102-3", programId: "p-102", groupId: "g-3", participantIds: ["st-302", "st-305"] },
-  { id: "r-102-4", programId: "p-102", groupId: "g-4", participantIds: ["st-402", "st-405"] },
-
-  // p-103: Group Song (Islamic)
-  { id: "r-103-1", programId: "p-103", groupId: "g-1", participantIds: ["st-101", "st-102"] },
-  { id: "r-103-2", programId: "p-103", groupId: "g-2", participantIds: ["st-201", "st-202"] },
-  { id: "r-103-3", programId: "p-103", groupId: "g-3", participantIds: ["st-301", "st-302"] },
-  { id: "r-103-4", programId: "p-103", groupId: "g-4", participantIds: ["st-401", "st-402"] },
-  
-  // p-104: Islamic Quiz (General - Mixed Sub/Jnr/Snr)
-  { id: "r-104-1", programId: "p-104", groupId: "g-1", participantIds: ["st-101", "st-102", "st-103"] },
-  { id: "r-104-2", programId: "p-104", groupId: "g-2", participantIds: ["st-201", "st-202", "st-203"] },
-  { id: "r-104-3", programId: "p-104", groupId: "g-3", participantIds: ["st-301", "st-302", "st-303"] },
-  { id: "r-104-4", programId: "p-104", groupId: "g-4", participantIds: ["st-401", "st-402", "st-403"] },
-
-  // p-105: English Speech (Sub-Junior)
-  { id: "r-105-1", programId: "p-105", groupId: "g-1", participantIds: ["st-103", "st-106"] },
-  { id: "r-105-2", programId: "p-105", groupId: "g-2", participantIds: ["st-203", "st-206"] },
-  { id: "r-105-3", programId: "p-105", groupId: "g-3", participantIds: ["st-303", "st-306"] },
-  { id: "r-105-4", programId: "p-105", groupId: "g-4", participantIds: ["st-403", "st-406"] },
-
-  // p-106: English Essay Writing (Off-Stage Junior)
-  { id: "r-106-1", programId: "p-106", groupId: "g-1", participantIds: ["st-102", "st-105"] },
-  { id: "r-106-2", programId: "p-106", groupId: "g-2", participantIds: ["st-202", "st-205"] },
-  { id: "r-106-3", programId: "p-106", groupId: "g-3", participantIds: ["st-302", "st-305"] },
-  { id: "r-106-4", programId: "p-106", groupId: "g-4", participantIds: ["st-402", "st-405"] },
-
-  // p-107: Pencil Drawing (Off-Stage Sub-Junior)
-  { id: "r-107-1", programId: "p-107", groupId: "g-1", participantIds: ["st-103"] },
-  { id: "r-107-2", programId: "p-107", groupId: "g-2", participantIds: ["st-203"] },
-  { id: "r-107-3", programId: "p-107", groupId: "g-3", participantIds: ["st-303"] },
-  { id: "r-107-4", programId: "p-107", groupId: "g-4", participantIds: ["st-403"] },
-
-  // p-108: Calligraphy (Off-Stage Senior)
-  { id: "r-108-1", programId: "p-108", groupId: "g-1", participantIds: ["st-104"] },
-  { id: "r-108-2", programId: "p-108", groupId: "g-2", participantIds: ["st-204"] },
-  { id: "r-108-3", programId: "p-108", groupId: "g-3", participantIds: ["st-304"] },
-  { id: "r-108-4", programId: "p-108", groupId: "g-4", participantIds: ["st-404"] },
-
-  // p-109: Water Color Painting (Off-Stage General)
-  { id: "r-109-1", programId: "p-109", groupId: "g-1", participantIds: ["st-105", "st-106"] },
-  { id: "r-109-2", programId: "p-109", groupId: "g-2", participantIds: ["st-205", "st-206"] },
-  { id: "r-109-3", programId: "p-109", groupId: "g-3", participantIds: ["st-305", "st-306"] },
-  { id: "r-109-4", programId: "p-109", groupId: "g-4", participantIds: ["st-405", "st-406"] }
-];
+const INITIAL_REGISTRATIONS = [];
 
 const DeskContext = createContext();
 export const useDesk = () => useContext(DeskContext);
