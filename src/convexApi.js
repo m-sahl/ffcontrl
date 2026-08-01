@@ -1,10 +1,13 @@
-// Browser-safe Proxy for Convex function references (no Node.js server dependencies)
-export const api = new Proxy({}, {
-  get(_, moduleName) {
-    return new Proxy({}, {
-      get(_, functionName) {
-        return `${String(moduleName)}:${String(functionName)}`;
-      }
-    });
+import { makeFunctionReference } from "convex/server";
+
+export const api = {
+  programs: {
+    get: makeFunctionReference("programs:get"),
+    add: makeFunctionReference("programs:add"),
+    remove: makeFunctionReference("programs:remove"),
+    setAll: makeFunctionReference("programs:setAll"),
+    updateStatus: makeFunctionReference("programs:updateStatus"),
+    updateDate: makeFunctionReference("programs:updateDate"),
+    updateOrder: makeFunctionReference("programs:updateOrder"),
   }
-});
+};
