@@ -17,11 +17,21 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 24, textAlign: "center", fontFamily: "sans-serif" }}>
+        <div style={{ padding: 24, textAlign: "center", fontFamily: "sans-serif", maxWidth: 500, margin: "40px auto" }}>
           <h2 style={{ color: "#f14d4d", marginBottom: 8 }}>FestFlow Control</h2>
-          <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>
-            Something went wrong while rendering. Please tap below to reload.
-          </p>
+          <div style={{
+            background: "#fee2e2",
+            color: "#991b1b",
+            padding: 14,
+            borderRadius: 12,
+            fontSize: 12,
+            textAlign: "left",
+            fontFamily: "monospace",
+            marginBottom: 16,
+            wordBreak: "break-word"
+          }}>
+            {this.state.error?.toString() || "Unknown rendering error"}
+          </div>
           <button
             onClick={() => window.location.reload()}
             style={{

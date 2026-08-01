@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convexApi";
 
 const INITIAL_PROGRAMS = [
   { id: "p-101", name: "Malayalam Elocution", category: "Senior", session: "Stage", date: "Day 1", type: "Single", status: "Upcoming", criteria: ["Fluency", "Content", "Body Language"] },
