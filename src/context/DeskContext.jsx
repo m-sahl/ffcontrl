@@ -114,6 +114,8 @@ const DeskContext = createContext();
 export const useDesk = () => useContext(DeskContext);
 
 export const DeskProvider = ({ children }) => {
+  const convexPrograms = useQuery(api.programs.get);
+
   const [programs, setPrograms] = useState(() => {
     try {
       const s = localStorage.getItem("ff_programs");
@@ -124,6 +126,29 @@ export const DeskProvider = ({ children }) => {
       return INITIAL_PROGRAMS;
     } catch { return INITIAL_PROGRAMS; }
   });
+
+  // Sync convex programs live from Cloud
+  useEffect(() => {
+    if (convexPrograms && Array.isArray(convexPrograms) && convexPrograms.length > 0) {
+      setPrograms(prev => {
+        return convexPrograms.map(cp => {
+          const local = prev.find(p => p.id === cp.id);
+          return {
+            id: cp.id,
+            name: cp.name,
+            category: cp.category || "General",
+            session: cp.session || "Stage",
+            type: cp.type || "Single",
+            maxParticipants: cp.maxParticipants || 1,
+            criteria: cp.criteria || [],
+            date: cp.date || local?.date || "Day 1",
+            status: cp.status || local?.status || "Upcoming",
+            sortOrder: cp.sortOrder !== undefined ? cp.sortOrder : local?.sortOrder
+          };
+        });
+      });
+    }
+  }, [convexPrograms]);
 
   const [students, setStudents] = useState(() => {
     try {
