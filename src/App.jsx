@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { DeskProvider, useDesk } from "./context/DeskContext";
 import GlobalStyles from "./styles/GlobalStyles";
@@ -12,6 +12,7 @@ import AttendancePage from "./components/AttendancePage";
 import CodeLetterPage from "./components/CodeLetterPage";
 import SettingsModal from "./components/SettingsModal";
 import LoginPage from "./components/LoginPage";
+import { triggerHaptic } from "./utils/haptics";
 
 const MainContent = ({ onLogout }) => {
   const {
@@ -37,6 +38,7 @@ const MainContent = ({ onLogout }) => {
   const [selectedSession, setSelectedSession] = useState("Off-Stage");
 
   const handleSelectSession = (sess) => {
+    triggerHaptic("light");
     setSelectedSession(sess);
     try {
       localStorage.setItem("ff_selected_session", sess);
@@ -47,42 +49,132 @@ const MainContent = ({ onLogout }) => {
   const [subView, setSubView] = useState(null); // "call-list" | "attendance" | "code-letter"
   const [activeProgram, setActiveProgram] = useState(null);
 
+  // Synchronized refs for system back (popstate)
+  const isSettingsOpenRef = useRef(isSettingsOpen);
+  useEffect(() => {
+    isSettingsOpenRef.current = isSettingsOpen;
+  }, [isSettingsOpen]);
+
+  const programsRef = useRef(programs);
+  useEffect(() => {
+    programsRef.current = programs;
+  }, [programs]);
+
+  // Ensure initial history entry is tagged as root
+  useEffect(() => {
+    if (!window.history.state || (!window.history.state.root && !window.history.state.subView)) {
+      window.history.replaceState({ root: true, subView: null, progId: null }, "");
+    }
+  }, []);
+
+  // System navigation listener (hardware back button, mobile edge swipe gesture, browser back)
+  useEffect(() => {
+    const handlePopState = (event) => {
+      // 1. If settings modal was open, close it
+      if (isSettingsOpenRef.current) {
+        setIsSettingsOpen(false);
+        return;
+      }
+
+      const state = event.state;
+
+      // 2. If back to root or empty state
+      if (!state || state.root || !state.subView) {
+        setSubView(null);
+        setActiveProgram(null);
+      } else {
+        // 3. Popped to a subview (call-list, attendance, or code-letter)
+        setSubView(state.subView);
+        if (state.progId) {
+          const prog = programsRef.current.find((p) => p.id === state.progId);
+          if (prog) {
+            setActiveProgram(prog);
+            if (prog.session) {
+              setSelectedSession(prog.session);
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   // Navigate to Call List view
   const handleOpenCallList = (program) => {
+    triggerHaptic("medium");
     setActiveProgram(program);
     if (program?.session) {
       handleSelectSession(program.session);
     }
     setSubView("call-list");
+    try {
+      window.history.pushState({ root: false, subView: "call-list", progId: program.id }, "");
+    } catch {}
   };
 
   // Directly navigate to Attendance view (for Off-Stage or editing)
   const handleOpenAttendance = (program) => {
+    triggerHaptic("medium");
     setActiveProgram(program);
     if (program?.session) {
       handleSelectSession(program.session);
     }
     setSubView("attendance");
+    try {
+      window.history.pushState({ root: false, subView: "attendance", progId: program.id }, "");
+    } catch {}
   };
 
   // Directly navigate to Code Letter view (for editing code letters)
   const handleOpenCodeLetter = (program) => {
+    triggerHaptic("medium");
     setActiveProgram(program);
     if (program?.session) {
       handleSelectSession(program.session);
     }
     setSubView("code-letter");
+    try {
+      window.history.pushState({ root: false, subView: "code-letter", progId: program.id }, "");
+    } catch {}
   };
 
   const handleStartRegistration = () => {
+    triggerHaptic("medium");
     setSubView("attendance");
+    try {
+      window.history.pushState({ root: false, subView: "attendance", progId: activeProgram?.id }, "");
+    } catch {}
   };
 
   const handleProceedToCodeLetter = () => {
+    triggerHaptic("medium");
     setSubView("code-letter");
+    try {
+      window.history.pushState({ root: false, subView: "code-letter", progId: activeProgram?.id }, "");
+    } catch {}
+  };
+
+  const handleOpenSettings = () => {
+    triggerHaptic("light");
+    setIsSettingsOpen(true);
+    try {
+      window.history.pushState({ root: false, modal: "settings", subView, progId: activeProgram?.id }, "");
+    } catch {}
+  };
+
+  const handleCloseSettings = () => {
+    triggerHaptic("light");
+    if (window.history.state?.modal === "settings") {
+      window.history.back();
+    } else {
+      setIsSettingsOpen(false);
+    }
   };
 
   const handleFinishCoding = () => {
+    triggerHaptic("success");
     if (activeProgram) {
       // Only set status to Running if it was not already Completed
       if (activeProgram.status !== "Completed" && activeProgram.status !== "published") {
@@ -95,10 +187,22 @@ const MainContent = ({ onLogout }) => {
     setSubView(null);
     setActiveProgram(null);
     setCurrentTab("events");
+    try {
+      window.history.replaceState({ root: true, subView: null, progId: null }, "");
+    } catch {}
   };
 
-  // Handle back navigation from AppBar
-  const handleAppBarBack = () => {
+  // Unified navigation back (triggered by UI back button on desktop or programmatically)
+  const handleNavigateBack = () => {
+    triggerHaptic("light");
+    if (window.history.state && !window.history.state.root) {
+      window.history.back();
+    } else {
+      handleFallbackBack();
+    }
+  };
+
+  const handleFallbackBack = () => {
     const isAlreadyFinishedOrRunning = activeProgram?.status === "Running" || activeProgram?.status === "Completed";
     if (subView === "code-letter") {
       if (isAlreadyFinishedOrRunning) {
@@ -141,8 +245,8 @@ const MainContent = ({ onLogout }) => {
         currentTab={currentTab}
         selectedSession={selectedSession}
         subView={subView}
-        onBack={handleAppBarBack}
-        onOpenSettings={() => setIsSettingsOpen(true)}
+        onBack={handleNavigateBack}
+        onOpenSettings={handleOpenSettings}
         onLockDesk={onLogout}
         activeStreams={activeStreams}
         programs={programs}
@@ -178,13 +282,7 @@ const MainContent = ({ onLogout }) => {
           <CallListPage
             program={activeProgram}
             participants={participants}
-            onBack={() => {
-              if (activeProgram?.session) {
-                handleSelectSession(activeProgram.session);
-              }
-              setSubView(null);
-              setActiveProgram(null);
-            }}
+            onBack={handleNavigateBack}
             onStartRegistration={handleStartRegistration}
           />
         )}
@@ -196,18 +294,7 @@ const MainContent = ({ onLogout }) => {
             participants={participants}
             onUpdateAttendance={updateAttendance}
             onBatchAttendance={batchAttendance}
-            onBack={() => {
-              const isAlreadyFinishedOrRunning = activeProgram?.status === "Running" || activeProgram?.status === "Completed";
-              if (activeProgram?.session === "Off-Stage" || isAlreadyFinishedOrRunning) {
-                if (activeProgram?.session) {
-                  handleSelectSession(activeProgram.session);
-                }
-                setSubView(null);
-                setActiveProgram(null);
-              } else {
-                setSubView("call-list");
-              }
-            }}
+            onBack={handleNavigateBack}
             onProceedToCodeLetter={handleProceedToCodeLetter}
           />
         )}
@@ -220,18 +307,7 @@ const MainContent = ({ onLogout }) => {
             onAssignCode={(studentId, letter) => assignCodeLetter(activeProgram.id, studentId, letter)}
             onResetCodes={() => resetCodeLetters(activeProgram.id)}
             onFinish={handleFinishCoding}
-            onBack={() => {
-              const isAlreadyFinishedOrRunning = activeProgram?.status === "Running" || activeProgram?.status === "Completed";
-              if (isAlreadyFinishedOrRunning) {
-                if (activeProgram?.session) {
-                  handleSelectSession(activeProgram.session);
-                }
-                setSubView(null);
-                setActiveProgram(null);
-              } else {
-                setSubView("attendance");
-              }
-            }}
+            onBack={handleNavigateBack}
           />
         )}
       </main>
@@ -248,7 +324,7 @@ const MainContent = ({ onLogout }) => {
       {/* Settings Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onClose={handleCloseSettings}
         onLockDesk={onLogout}
       />
     </>

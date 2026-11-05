@@ -9,6 +9,7 @@ import {
   TEXT_PRIMARY_LIGHT,
   TEXT_MUTED_LIGHT
 } from "../styles/DesignTokens";
+import { triggerHaptic } from "../utils/haptics";
 
 const ALL_ALPHABETS = [
   "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
@@ -32,6 +33,33 @@ const CodeLetterPage = ({
   onBack
 }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const handleOpenPicker = (student) => {
+    triggerHaptic("medium");
+    setSelectedStudent(student);
+    try {
+      window.history.pushState({ modal: "code-picker" }, "");
+    } catch {}
+  };
+
+  const handleClosePicker = () => {
+    triggerHaptic("light");
+    if (window.history.state?.modal === "code-picker") {
+      window.history.back();
+    } else {
+      setSelectedStudent(null);
+    }
+  };
+
+  useEffect(() => {
+    const handlePop = () => {
+      if (selectedStudent) {
+        setSelectedStudent(null);
+      }
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, [selectedStudent]);
   const isOffStage = program?.session === "Off-Stage";
   const autoAssignedRef = useRef(false);
 
@@ -86,7 +114,11 @@ const CodeLetterPage = ({
         }}
       >
         <button
-          onClick={onBack}
+          onClick={(e) => {
+            triggerHaptic("light");
+            if (onBack) onBack(e);
+          }}
+          className="ui-back-btn"
           style={{
             background: "#ffffff",
             border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -118,7 +150,10 @@ const CodeLetterPage = ({
 
           {!isOffStage && assignedCodes.length > 0 && (
             <button
-              onClick={onResetCodes}
+              onClick={() => {
+                triggerHaptic("light");
+                if (onResetCodes) onResetCodes();
+              }}
               style={{
                 padding: "4px 10px",
                 borderRadius: 8,
@@ -250,7 +285,7 @@ const CodeLetterPage = ({
                   </span>
                 ) : !isOffStage ? (
                   <button
-                    onClick={() => setSelectedStudent(p)}
+                    onClick={() => handleOpenPicker(p)}
                     style={{
                       padding: "6px 16px",
                       borderRadius: 10,
@@ -281,7 +316,7 @@ const CodeLetterPage = ({
           student={selectedStudent}
           remainingLetters={remainingLetters}
           isOpen={!!selectedStudent}
-          onClose={() => setSelectedStudent(null)}
+          onClose={handleClosePicker}
           onAssignCode={onAssignCode}
         />
       )}
@@ -290,7 +325,10 @@ const CodeLetterPage = ({
       <div className="bottom-bar">
         <button
           className="btn-mobile-primary"
-          onClick={onFinish}
+          onClick={(e) => {
+            triggerHaptic("success");
+            if (onFinish) onFinish(e);
+          }}
           disabled={!isAllAssigned}
           style={{
             maxWidth: 520,

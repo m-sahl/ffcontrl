@@ -8,6 +8,7 @@ import {
   TEXT_PRIMARY_LIGHT,
   TEXT_MUTED_LIGHT
 } from "../styles/DesignTokens";
+import { triggerHaptic } from "../utils/haptics";
 
 const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAssignCode }) => {
   const [flippedIndex, setFlippedIndex] = useState(null);
@@ -26,6 +27,7 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
 
   const handleShuffleClick = () => {
     if (flippedIndex !== null || assignedLetter || cardCount === 0) return;
+    triggerHaptic("light");
     setIsShuffling(true);
     setTimeout(() => {
       setIsShuffling(false);
@@ -35,6 +37,7 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
   const handleCardClick = (idx) => {
     if (flippedIndex !== null || assignedLetter || cardCount === 0 || isShuffling) return;
 
+    triggerHaptic("medium");
     const randomIdx = Math.floor(Math.random() * remainingLetters.length);
     const pickedLetter = remainingLetters[randomIdx];
 
@@ -42,6 +45,7 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
     setAssignedLetter(pickedLetter);
 
     setTimeout(() => {
+      triggerHaptic("success");
       onAssignCode(student.id, pickedLetter);
       onClose();
     }, 850);

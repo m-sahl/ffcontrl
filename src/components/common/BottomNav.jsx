@@ -1,6 +1,7 @@
 import React from "react";
 import Ic from "./Ic";
 import { CORAL_PRIMARY, CARD_BORDER_LIGHT, TEXT_MUTED_LIGHT } from "../../styles/DesignTokens";
+import { triggerHaptic } from "../../utils/haptics";
 
 const BottomNav = ({
   selectedSession = "Off-Stage",
@@ -58,7 +59,10 @@ const BottomNav = ({
           return (
             <button
               key={tab.id}
-              onClick={() => onSelectSession && onSelectSession(tab.id)}
+              onClick={() => {
+                triggerHaptic("light");
+                if (onSelectSession) onSelectSession(tab.id);
+              }}
               style={{
                 flex: 1,
                 height: "100%",

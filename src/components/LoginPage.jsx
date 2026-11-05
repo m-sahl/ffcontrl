@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import Ic from "./common/Ic";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   CARD_BORDER_LIGHT,
@@ -21,6 +22,7 @@ const LoginPage = () => {
 
   const handleDigit = useCallback((digit) => {
     if (isVerifying) return;
+    triggerHaptic("light");
     setIsError(false);
     setErrorMessage("");
 
@@ -32,6 +34,7 @@ const LoginPage = () => {
 
   const handleBackspace = useCallback(() => {
     if (isVerifying) return;
+    triggerHaptic("light");
     setIsError(false);
     setErrorMessage("");
     setPin((prev) => prev.slice(0, -1));
@@ -39,6 +42,7 @@ const LoginPage = () => {
 
   const handleClear = useCallback(() => {
     if (isVerifying) return;
+    triggerHaptic("light");
     setIsError(false);
     setErrorMessage("");
     setPin("");
@@ -77,6 +81,7 @@ const LoginPage = () => {
       if (!isMounted) return;
 
       if (!success) {
+        triggerHaptic("error");
         setIsError(true);
         setErrorMessage("Incorrect PIN. Please try again.");
         setIsVerifying(false);
@@ -88,6 +93,8 @@ const LoginPage = () => {
             setIsError(false);
           }
         }, 500);
+      } else {
+        triggerHaptic("success");
       }
     };
 

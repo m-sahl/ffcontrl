@@ -4,6 +4,7 @@ import StreamModal from "./StreamModal";
 import EndProgramModal from "./EndProgramModal";
 import ProgramDetailsModal from "./ProgramDetailsModal";
 import { useDesk } from "../context/DeskContext";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   EMERALD_SUCCESS,
@@ -57,6 +58,64 @@ const EventsPage = ({
   const [streamModalProg, setStreamModalProg] = useState(null);
   const [confirmEndProg, setConfirmEndProg] = useState(null);
   const [selectedDetailsProg, setSelectedDetailsProg] = useState(null);
+
+  const handleOpenStreamModal = (prog) => {
+    triggerHaptic("medium");
+    setStreamModalProg(prog);
+    try {
+      window.history.pushState({ modal: "stream-modal" }, "");
+    } catch {}
+  };
+  const handleCloseStreamModal = () => {
+    triggerHaptic("light");
+    if (window.history.state?.modal === "stream-modal") {
+      window.history.back();
+    } else {
+      setStreamModalProg(null);
+    }
+  };
+
+  const handleOpenConfirmEnd = (prog) => {
+    triggerHaptic("medium");
+    setConfirmEndProg(prog);
+    try {
+      window.history.pushState({ modal: "confirm-end" }, "");
+    } catch {}
+  };
+  const handleCloseConfirmEnd = () => {
+    triggerHaptic("light");
+    if (window.history.state?.modal === "confirm-end") {
+      window.history.back();
+    } else {
+      setConfirmEndProg(null);
+    }
+  };
+
+  const handleOpenDetails = (prog) => {
+    triggerHaptic("medium");
+    setSelectedDetailsProg(prog);
+    try {
+      window.history.pushState({ modal: "program-details" }, "");
+    } catch {}
+  };
+  const handleCloseDetails = () => {
+    triggerHaptic("light");
+    if (window.history.state?.modal === "program-details") {
+      window.history.back();
+    } else {
+      setSelectedDetailsProg(null);
+    }
+  };
+
+  useEffect(() => {
+    const onPop = () => {
+      if (streamModalProg) setStreamModalProg(null);
+      if (confirmEndProg) setConfirmEndProg(null);
+      if (selectedDetailsProg) setSelectedDetailsProg(null);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [streamModalProg, confirmEndProg, selectedDetailsProg]);
 
   // Status sort priority: Upcoming (top) -> Running (middle/first) -> Finished/Completed (down)
   const getProgramStatusOrder = (p) => {
@@ -143,7 +202,8 @@ const EventsPage = ({
   const isCallingUp = false;
 
   const handleSelectUpcoming = (prog) => {
-    setStreamModalProg(prog);
+    triggerHaptic("medium");
+    handleOpenStreamModal(prog);
   };
 
   // Distinct main categories matching updated base URL (Low, Mid, High, General)
@@ -272,7 +332,10 @@ const EventsPage = ({
           {/* Dedicated Navigator Button into Off-Stage Page */}
           <button
             type="button"
-            onClick={() => setSelectedSession("Off-Stage")}
+            onClick={() => {
+              triggerHaptic("medium");
+              setSelectedSession("Off-Stage");
+            }}
             style={{
               width: "100%",
               maxWidth: 320,
@@ -300,60 +363,6 @@ const EventsPage = ({
         </div>
       ) : (
         <>
-          {/* Off-Stage Top Bar Header */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "12px 16px",
-              background: "#ffffff",
-              borderRadius: 18,
-              border: `1.2px solid ${CARD_BORDER_LIGHT}`,
-              boxShadow: "0 2px 8px rgba(15, 23, 42, 0.03)",
-              marginBottom: 18
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 11,
-                  background: "rgba(99, 102, 241, 0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#6366f1"
-                }}
-              >
-                <Ic name="palette" size={20} color="#6366f1" />
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 800,
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    color: "#6366f1"
-                  }}
-                >
-                  OFF-STAGE DESK
-                </div>
-                <div
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 800,
-                    color: TEXT_PRIMARY_LIGHT,
-                    letterSpacing: "-0.3px"
-                  }}
-                >
-                  Off-Stage Programs
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Animated Session Switch Wrapper */}
           <div key={selectedSession} className="anim-session-switch">
         
@@ -361,6 +370,7 @@ const EventsPage = ({
         {activeTab !== "completed" && currentBannerProg && (
           <div
             onClick={() => {
+              triggerHaptic("medium");
               setActiveTab("completed");
             }}
             style={{
@@ -468,7 +478,10 @@ const EventsPage = ({
         {!activeTab && (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {/* Card 1: All Programs */}
-            <button className="mobile-nav-btn" onClick={() => setActiveTab("all")}>
+            <button className="mobile-nav-btn" onClick={() => {
+              triggerHaptic("medium");
+              setActiveTab("all");
+            }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
@@ -503,7 +516,10 @@ const EventsPage = ({
             </button>
 
             {/* Card 2: Upcoming Programs */}
-            <button className="mobile-nav-btn" onClick={() => setActiveTab("upcoming")}>
+            <button className="mobile-nav-btn" onClick={() => {
+              triggerHaptic("medium");
+              setActiveTab("upcoming");
+            }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
@@ -538,7 +554,10 @@ const EventsPage = ({
             </button>
 
             {/* Card 3: Completed & Running Programs */}
-            <button className="mobile-nav-btn" onClick={() => setActiveTab("completed")}>
+            <button className="mobile-nav-btn" onClick={() => {
+              triggerHaptic("medium");
+              setActiveTab("completed");
+            }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
@@ -588,6 +607,7 @@ const EventsPage = ({
             >
               <button
                 onClick={() => {
+                  triggerHaptic("light");
                   setActiveTab(null);
                   setSearchQuery("");
                   setSelectedCategory("All");
@@ -622,8 +642,7 @@ const EventsPage = ({
                   ? "All Programs"
                   : activeTab === "completed"
                   ? "Completed & Running"
-                  : "Upcoming Programs"}{" "}
-                ({selectedSession})
+                  : "Upcoming"}
               </div>
             </div>
 
@@ -669,7 +688,10 @@ const EventsPage = ({
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setSearchQuery("");
+                  }}
                   style={{
                     position: "absolute",
                     right: 12,
@@ -717,7 +739,10 @@ const EventsPage = ({
                 return (
                   <button
                     key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => {
+                      triggerHaptic("light");
+                      setSelectedCategory(cat);
+                    }}
                     style={{
                       padding: "7px 14px",
                       borderRadius: 999,
@@ -1160,7 +1185,7 @@ const EventsPage = ({
                     return (
                       <div
                         key={p.id}
-                        onClick={() => setSelectedDetailsProg(p)}
+                        onClick={() => handleOpenDetails(p)}
                         style={{
                           padding: "14px 16px",
                           borderRadius: 18,
@@ -1229,7 +1254,7 @@ const EventsPage = ({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setConfirmEndProg(p);
+                                handleOpenConfirmEnd(p);
                               }}
                               style={{
                                 background: "rgba(16, 185, 129, 0.1)",
@@ -1272,10 +1297,11 @@ const EventsPage = ({
         program={streamModalProg}
         participantsCount={streamModalProg ? getParticipantsForProgram(streamModalProg.id).length : 0}
         isOpen={!!streamModalProg}
-        onClose={() => setStreamModalProg(null)}
+        onClose={handleCloseStreamModal}
         onStream={() => {
           if (streamModalProg) {
             const prog = streamModalProg;
+            setStreamModalProg(null);
             onStreamProgram(prog.id);
             if (prog.session === "Off-Stage") {
               if (onOpenAttendance) {
@@ -1290,7 +1316,6 @@ const EventsPage = ({
                 onOpenAttendance(prog);
               }
             }
-            setStreamModalProg(null);
           }
         }}
       />
@@ -1299,7 +1324,7 @@ const EventsPage = ({
       <EndProgramModal
         program={confirmEndProg}
         isOpen={!!confirmEndProg}
-        onClose={() => setConfirmEndProg(null)}
+        onClose={handleCloseConfirmEnd}
         onConfirm={onMarkCompleted}
       />
 
@@ -1307,7 +1332,7 @@ const EventsPage = ({
       <ProgramDetailsModal
         program={selectedDetailsProg}
         isOpen={!!selectedDetailsProg}
-        onClose={() => setSelectedDetailsProg(null)}
+        onClose={handleCloseDetails}
         participants={selectedDetailsProg ? getParticipantsForProgram(selectedDetailsProg.id) : []}
         onUpdateAttendance={updateAttendance}
         onAssignCodeLetter={assignCodeLetter}

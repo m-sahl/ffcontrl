@@ -6,6 +6,7 @@ import {
   TEXT_PRIMARY_LIGHT,
   TEXT_MUTED_LIGHT
 } from "../styles/DesignTokens";
+import { triggerHaptic } from "../utils/haptics";
 
 const CallListPage = ({ program, participants = [], onBack, onStartRegistration }) => {
   return (
@@ -27,7 +28,11 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
         }}
       >
         <button
-          onClick={onBack}
+          onClick={(e) => {
+            triggerHaptic("light");
+            if (onBack) onBack(e);
+          }}
+          className="ui-back-btn"
           style={{
             background: "#ffffff",
             border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -197,7 +202,10 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
       <div className="bottom-bar">
         <button
           className="btn-mobile-primary"
-          onClick={onStartRegistration}
+          onClick={(e) => {
+            triggerHaptic("medium");
+            if (onStartRegistration) onStartRegistration(e);
+          }}
           style={{ maxWidth: 520, margin: "0 auto" }}
         >
           Start Registration Desk <Ic name="arrowRight" size={16} color="#ffffff" />
