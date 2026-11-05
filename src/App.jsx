@@ -12,6 +12,7 @@ import AttendancePage from "./components/AttendancePage";
 import CodeLetterPage from "./components/CodeLetterPage";
 import SettingsModal from "./components/SettingsModal";
 import LoginPage from "./components/LoginPage";
+import { triggerHaptic } from "./utils/haptics";
 
 const MainContent = ({ onLogout }) => {
   const {
@@ -37,6 +38,7 @@ const MainContent = ({ onLogout }) => {
   const [selectedSession, setSelectedSession] = useState("Off-Stage");
 
   const handleSelectSession = (sess) => {
+    triggerHaptic("light");
     setSelectedSession(sess);
     try {
       localStorage.setItem("ff_selected_session", sess);
@@ -101,6 +103,7 @@ const MainContent = ({ onLogout }) => {
 
   // Navigate to Call List view
   const handleOpenCallList = (program) => {
+    triggerHaptic("medium");
     setActiveProgram(program);
     if (program?.session) {
       handleSelectSession(program.session);
@@ -113,6 +116,7 @@ const MainContent = ({ onLogout }) => {
 
   // Directly navigate to Attendance view (for Off-Stage or editing)
   const handleOpenAttendance = (program) => {
+    triggerHaptic("medium");
     setActiveProgram(program);
     if (program?.session) {
       handleSelectSession(program.session);
@@ -125,6 +129,7 @@ const MainContent = ({ onLogout }) => {
 
   // Directly navigate to Code Letter view (for editing code letters)
   const handleOpenCodeLetter = (program) => {
+    triggerHaptic("medium");
     setActiveProgram(program);
     if (program?.session) {
       handleSelectSession(program.session);
@@ -136,6 +141,7 @@ const MainContent = ({ onLogout }) => {
   };
 
   const handleStartRegistration = () => {
+    triggerHaptic("medium");
     setSubView("attendance");
     try {
       window.history.pushState({ root: false, subView: "attendance", progId: activeProgram?.id }, "");
@@ -143,6 +149,7 @@ const MainContent = ({ onLogout }) => {
   };
 
   const handleProceedToCodeLetter = () => {
+    triggerHaptic("medium");
     setSubView("code-letter");
     try {
       window.history.pushState({ root: false, subView: "code-letter", progId: activeProgram?.id }, "");
@@ -150,6 +157,7 @@ const MainContent = ({ onLogout }) => {
   };
 
   const handleOpenSettings = () => {
+    triggerHaptic("light");
     setIsSettingsOpen(true);
     try {
       window.history.pushState({ root: false, modal: "settings", subView, progId: activeProgram?.id }, "");
@@ -157,6 +165,7 @@ const MainContent = ({ onLogout }) => {
   };
 
   const handleCloseSettings = () => {
+    triggerHaptic("light");
     if (window.history.state?.modal === "settings") {
       window.history.back();
     } else {
@@ -165,6 +174,7 @@ const MainContent = ({ onLogout }) => {
   };
 
   const handleFinishCoding = () => {
+    triggerHaptic("success");
     if (activeProgram) {
       // Only set status to Running if it was not already Completed
       if (activeProgram.status !== "Completed" && activeProgram.status !== "published") {
@@ -184,6 +194,7 @@ const MainContent = ({ onLogout }) => {
 
   // Unified navigation back (triggered by UI back button on desktop or programmatically)
   const handleNavigateBack = () => {
+    triggerHaptic("light");
     if (window.history.state && !window.history.state.root) {
       window.history.back();
     } else {

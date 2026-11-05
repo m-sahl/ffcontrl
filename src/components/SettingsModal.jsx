@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import Ic from "./common/Ic";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   CARD_BORDER_LIGHT,
@@ -11,7 +12,13 @@ import {
 const SettingsModal = ({ isOpen, onClose, onLockDesk }) => {
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    triggerHaptic("light");
+    onClose();
+  };
+
   const handleLogout = () => {
+    triggerHaptic("medium");
     onClose();
     if (onLockDesk) {
       onLockDesk();
@@ -21,7 +28,7 @@ const SettingsModal = ({ isOpen, onClose, onLockDesk }) => {
   return createPortal(
     <div
       className="anim-fade"
-      onClick={onClose}
+      onClick={handleClose}
       style={{
         position: "fixed",
         inset: 0,
@@ -88,7 +95,7 @@ const SettingsModal = ({ isOpen, onClose, onLockDesk }) => {
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               background: "#f1f4f9",
               border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -134,7 +141,7 @@ const SettingsModal = ({ isOpen, onClose, onLockDesk }) => {
           </button>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               width: "100%",
               padding: "11px",

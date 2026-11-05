@@ -1,6 +1,7 @@
 import React from "react";
 import Ic from "./common/Ic";
 import { useDesk } from "../context/DeskContext";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   SAPPHIRE_BLUE,
@@ -86,6 +87,7 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
       {/* Notifications / Live Call Up Card (Leader APK _buildNotificationsCard) */}
       <div
         onClick={() => {
+          triggerHaptic("medium");
           if (activeProgram && onOpenCallList) {
             onOpenCallList(activeProgram);
           } else {
@@ -250,7 +252,10 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
       >
         {/* Top-Left: Registered Entries */}
         <div
-          onClick={onNavigateToEvents}
+          onClick={() => {
+            triggerHaptic("light");
+            onNavigateToEvents();
+          }}
           style={{
             height: 114,
             padding: 16,
@@ -307,7 +312,10 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
 
         {/* Top-Right: Total Programs */}
         <div
-          onClick={onNavigateToEvents}
+          onClick={() => {
+            triggerHaptic("light");
+            onNavigateToEvents();
+          }}
           style={{
             height: 114,
             padding: 16,
@@ -364,7 +372,10 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
 
         {/* Bottom-Left: Stage Events */}
         <div
-          onClick={onNavigateToEvents}
+          onClick={() => {
+            triggerHaptic("light");
+            onNavigateToEvents();
+          }}
           style={{
             height: 114,
             padding: 16,
@@ -416,7 +427,10 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
 
         {/* Bottom-Right: Non-Stage Events */}
         <div
-          onClick={onNavigateToEvents}
+          onClick={() => {
+            triggerHaptic("light");
+            onNavigateToEvents();
+          }}
           style={{
             height: 114,
             padding: 16,
@@ -502,7 +516,10 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
         </div>
 
         <button
-          onClick={onNavigateToEvents}
+          onClick={() => {
+            triggerHaptic("light");
+            onNavigateToEvents();
+          }}
           style={{
             background: "none",
             border: "none",
@@ -546,6 +563,7 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
               <div
                 key={prog.id}
                 onClick={() => {
+                  triggerHaptic("medium");
                   if (onOpenCallList) {
                     onOpenCallList(prog);
                   } else {

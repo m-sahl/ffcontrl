@@ -8,6 +8,7 @@ import {
   TEXT_PRIMARY_LIGHT,
   TEXT_MUTED_LIGHT
 } from "../styles/DesignTokens";
+import { triggerHaptic } from "../utils/haptics";
 
 const AttendancePage = ({
   program,
@@ -40,7 +41,10 @@ const AttendancePage = ({
         }}
       >
         <button
-          onClick={onBack}
+          onClick={(e) => {
+            triggerHaptic("light");
+            if (onBack) onBack(e);
+          }}
           className="ui-back-btn"
           style={{
             background: "#ffffff",
@@ -121,7 +125,10 @@ const AttendancePage = ({
         </div>
 
         <button
-          onClick={() => onBatchAttendance(program.id, participants.map(p => p.id), presentCount !== totalCount)}
+          onClick={() => {
+            triggerHaptic("light");
+            onBatchAttendance(program.id, participants.map(p => p.id), presentCount !== totalCount);
+          }}
           style={{
             padding: "8px 12px",
             borderRadius: 10,
@@ -158,7 +165,10 @@ const AttendancePage = ({
           participants.map(p => (
             <div
               key={p.id}
-              onClick={() => onUpdateAttendance(program.id, p.id, !p.isPresent)}
+              onClick={() => {
+                triggerHaptic("light");
+                onUpdateAttendance(program.id, p.id, !p.isPresent);
+              }}
               style={{
                 padding: "12px 14px",
                 borderRadius: 14,
@@ -233,7 +243,10 @@ const AttendancePage = ({
       <div className="bottom-bar">
         <button
           className="btn-mobile-primary"
-          onClick={onProceedToCodeLetter}
+          onClick={(e) => {
+            triggerHaptic("medium");
+            if (onProceedToCodeLetter) onProceedToCodeLetter(e);
+          }}
           disabled={presentCount === 0}
           style={{
             maxWidth: 520,

@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import Ic from "./common/Ic";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   CARD_BORDER_LIGHT,
@@ -15,10 +16,20 @@ const StreamModal = ({ program, participantsCount = 0, isOpen, onClose, onStream
   const isOffStage = program.session === "Off-Stage";
   const catColor = getCategoryColor(program.category);
 
+  const handleClose = () => {
+    triggerHaptic("light");
+    onClose();
+  };
+
+  const handleStream = () => {
+    triggerHaptic("medium");
+    onStream();
+  };
+
   return createPortal(
     <div
       className="anim-fade"
-      onClick={onClose}
+      onClick={handleClose}
       style={{
         position: "fixed",
         inset: 0,
@@ -110,7 +121,7 @@ const StreamModal = ({ program, participantsCount = 0, isOpen, onClose, onStream
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               background: "#f1f4f9",
               border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -253,7 +264,7 @@ const StreamModal = ({ program, participantsCount = 0, isOpen, onClose, onStream
         <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               flex: 1,
               height: 44,
@@ -270,7 +281,7 @@ const StreamModal = ({ program, participantsCount = 0, isOpen, onClose, onStream
           </button>
           <button
             type="button"
-            onClick={onStream}
+            onClick={handleStream}
             style={{
               flex: 2,
               height: 44,

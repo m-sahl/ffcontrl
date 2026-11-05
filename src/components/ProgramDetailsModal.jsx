@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Ic from "./common/Ic";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   EMERALD_SUCCESS,
@@ -110,6 +111,7 @@ const ProgramDetailsModal = ({
   // Start edit mode with snapshot to track whether any updates actually occur
   const handleStartEditing = () => {
     if (!isRunning) return;
+    triggerHaptic("medium");
     const snapshot = {};
     participants.forEach(p => {
       snapshot[p.id] = {
@@ -124,6 +126,7 @@ const ProgramDetailsModal = ({
 
   // Assign next code letter to a latecomer
   const handleAdmitLateStudent = (studentId) => {
+    triggerHaptic("medium");
     if (onUpdateAttendance) {
       onUpdateAttendance(program.id, studentId, true);
     }
@@ -134,6 +137,7 @@ const ProgramDetailsModal = ({
 
   // Revert a student back to absent if added by mistake
   const handleRevertStudent = (studentId) => {
+    triggerHaptic("light");
     if (onAssignCodeLetter) {
       onAssignCodeLetter(program.id, studentId, null);
     }
@@ -158,13 +162,16 @@ const ProgramDetailsModal = ({
     }
 
     if (hasChanges) {
+      triggerHaptic("medium");
       setShowConfirmUpdate(true);
     } else {
+      triggerHaptic("light");
       setShowNoChangesNotice(true);
     }
   };
 
   const handleClose = () => {
+    triggerHaptic("light");
     setIsEditing(false);
     setShowConfirmUpdate(false);
     setShowNoChangesNotice(false);
@@ -757,6 +764,7 @@ const ProgramDetailsModal = ({
               <button
                 type="button"
                 onClick={() => {
+                  triggerHaptic("light");
                   setIsEditing(false);
                   setSearchQuery("");
                   setEditSnapshot(null);
@@ -857,7 +865,10 @@ const ProgramDetailsModal = ({
         <div style={{ display: "flex", gap: 10 }}>
           <button
             type="button"
-            onClick={() => setShowConfirmUpdate(false)}
+            onClick={() => {
+              triggerHaptic("light");
+              setShowConfirmUpdate(false);
+            }}
             style={{
               flex: 1,
               height: 44,
@@ -875,6 +886,7 @@ const ProgramDetailsModal = ({
           <button
             type="button"
             onClick={() => {
+              triggerHaptic("success");
               setShowConfirmUpdate(false);
               setIsEditing(false);
               setEditSnapshot(null);
@@ -905,7 +917,10 @@ const ProgramDetailsModal = ({
   {showNoChangesNotice && createPortal(
     <div
       className="anim-fade"
-      onClick={() => setShowNoChangesNotice(false)}
+      onClick={() => {
+        triggerHaptic("light");
+        setShowNoChangesNotice(false);
+      }}
       style={{
         position: "fixed",
         inset: 0,
@@ -975,6 +990,7 @@ const ProgramDetailsModal = ({
         <button
           type="button"
           onClick={() => {
+            triggerHaptic("light");
             setShowNoChangesNotice(false);
             setIsEditing(false);
             setEditSnapshot(null);

@@ -9,6 +9,7 @@ import {
   TEXT_PRIMARY_LIGHT,
   TEXT_MUTED_LIGHT
 } from "../styles/DesignTokens";
+import { triggerHaptic } from "../utils/haptics";
 
 const ALL_ALPHABETS = [
   "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
@@ -34,6 +35,7 @@ const CodeLetterPage = ({
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const handleOpenPicker = (student) => {
+    triggerHaptic("medium");
     setSelectedStudent(student);
     try {
       window.history.pushState({ modal: "code-picker" }, "");
@@ -41,6 +43,7 @@ const CodeLetterPage = ({
   };
 
   const handleClosePicker = () => {
+    triggerHaptic("light");
     if (window.history.state?.modal === "code-picker") {
       window.history.back();
     } else {
@@ -111,7 +114,10 @@ const CodeLetterPage = ({
         }}
       >
         <button
-          onClick={onBack}
+          onClick={(e) => {
+            triggerHaptic("light");
+            if (onBack) onBack(e);
+          }}
           className="ui-back-btn"
           style={{
             background: "#ffffff",
@@ -144,7 +150,10 @@ const CodeLetterPage = ({
 
           {!isOffStage && assignedCodes.length > 0 && (
             <button
-              onClick={onResetCodes}
+              onClick={() => {
+                triggerHaptic("light");
+                if (onResetCodes) onResetCodes();
+              }}
               style={{
                 padding: "4px 10px",
                 borderRadius: 8,
@@ -316,7 +325,10 @@ const CodeLetterPage = ({
       <div className="bottom-bar">
         <button
           className="btn-mobile-primary"
-          onClick={onFinish}
+          onClick={(e) => {
+            triggerHaptic("success");
+            if (onFinish) onFinish(e);
+          }}
           disabled={!isAllAssigned}
           style={{
             maxWidth: 520,

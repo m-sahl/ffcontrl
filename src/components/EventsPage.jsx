@@ -4,6 +4,7 @@ import StreamModal from "./StreamModal";
 import EndProgramModal from "./EndProgramModal";
 import ProgramDetailsModal from "./ProgramDetailsModal";
 import { useDesk } from "../context/DeskContext";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   EMERALD_SUCCESS,
@@ -59,12 +60,14 @@ const EventsPage = ({
   const [selectedDetailsProg, setSelectedDetailsProg] = useState(null);
 
   const handleOpenStreamModal = (prog) => {
+    triggerHaptic("medium");
     setStreamModalProg(prog);
     try {
       window.history.pushState({ modal: "stream-modal" }, "");
     } catch {}
   };
   const handleCloseStreamModal = () => {
+    triggerHaptic("light");
     if (window.history.state?.modal === "stream-modal") {
       window.history.back();
     } else {
@@ -73,12 +76,14 @@ const EventsPage = ({
   };
 
   const handleOpenConfirmEnd = (prog) => {
+    triggerHaptic("medium");
     setConfirmEndProg(prog);
     try {
       window.history.pushState({ modal: "confirm-end" }, "");
     } catch {}
   };
   const handleCloseConfirmEnd = () => {
+    triggerHaptic("light");
     if (window.history.state?.modal === "confirm-end") {
       window.history.back();
     } else {
@@ -87,12 +92,14 @@ const EventsPage = ({
   };
 
   const handleOpenDetails = (prog) => {
+    triggerHaptic("medium");
     setSelectedDetailsProg(prog);
     try {
       window.history.pushState({ modal: "program-details" }, "");
     } catch {}
   };
   const handleCloseDetails = () => {
+    triggerHaptic("light");
     if (window.history.state?.modal === "program-details") {
       window.history.back();
     } else {
@@ -195,6 +202,7 @@ const EventsPage = ({
   const isCallingUp = false;
 
   const handleSelectUpcoming = (prog) => {
+    triggerHaptic("medium");
     handleOpenStreamModal(prog);
   };
 
@@ -324,7 +332,10 @@ const EventsPage = ({
           {/* Dedicated Navigator Button into Off-Stage Page */}
           <button
             type="button"
-            onClick={() => setSelectedSession("Off-Stage")}
+            onClick={() => {
+              triggerHaptic("medium");
+              setSelectedSession("Off-Stage");
+            }}
             style={{
               width: "100%",
               maxWidth: 320,
@@ -359,6 +370,7 @@ const EventsPage = ({
         {activeTab !== "completed" && currentBannerProg && (
           <div
             onClick={() => {
+              triggerHaptic("medium");
               setActiveTab("completed");
             }}
             style={{
@@ -466,7 +478,10 @@ const EventsPage = ({
         {!activeTab && (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {/* Card 1: All Programs */}
-            <button className="mobile-nav-btn" onClick={() => setActiveTab("all")}>
+            <button className="mobile-nav-btn" onClick={() => {
+              triggerHaptic("medium");
+              setActiveTab("all");
+            }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
@@ -501,7 +516,10 @@ const EventsPage = ({
             </button>
 
             {/* Card 2: Upcoming Programs */}
-            <button className="mobile-nav-btn" onClick={() => setActiveTab("upcoming")}>
+            <button className="mobile-nav-btn" onClick={() => {
+              triggerHaptic("medium");
+              setActiveTab("upcoming");
+            }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
@@ -536,7 +554,10 @@ const EventsPage = ({
             </button>
 
             {/* Card 3: Completed & Running Programs */}
-            <button className="mobile-nav-btn" onClick={() => setActiveTab("completed")}>
+            <button className="mobile-nav-btn" onClick={() => {
+              triggerHaptic("medium");
+              setActiveTab("completed");
+            }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
@@ -586,6 +607,7 @@ const EventsPage = ({
             >
               <button
                 onClick={() => {
+                  triggerHaptic("light");
                   setActiveTab(null);
                   setSearchQuery("");
                   setSelectedCategory("All");
@@ -666,7 +688,10 @@ const EventsPage = ({
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setSearchQuery("");
+                  }}
                   style={{
                     position: "absolute",
                     right: 12,
@@ -714,7 +739,10 @@ const EventsPage = ({
                 return (
                   <button
                     key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => {
+                      triggerHaptic("light");
+                      setSelectedCategory(cat);
+                    }}
                     style={{
                       padding: "7px 14px",
                       borderRadius: 999,

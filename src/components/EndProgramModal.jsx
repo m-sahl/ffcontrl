@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import Ic from "./common/Ic";
+import { triggerHaptic } from "../utils/haptics";
 import {
   CORAL_PRIMARY,
   RED_DANGER,
@@ -12,10 +13,21 @@ import {
 const EndProgramModal = ({ program, isOpen, onClose, onConfirm }) => {
   if (!isOpen || !program) return null;
 
+  const handleClose = () => {
+    triggerHaptic("light");
+    onClose();
+  };
+
+  const handleConfirm = () => {
+    triggerHaptic("success");
+    onConfirm(program.id);
+    onClose();
+  };
+
   return createPortal(
     <div
       className="anim-fade"
-      onClick={onClose}
+      onClick={handleClose}
       style={{
         position: "fixed",
         inset: 0,
@@ -70,7 +82,7 @@ const EndProgramModal = ({ program, isOpen, onClose, onConfirm }) => {
           </span>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               background: "#f1f4f9",
               border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -138,7 +150,7 @@ const EndProgramModal = ({ program, isOpen, onClose, onConfirm }) => {
         <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               flex: 1,
               height: 44,
@@ -156,10 +168,7 @@ const EndProgramModal = ({ program, isOpen, onClose, onConfirm }) => {
 
           <button
             type="button"
-            onClick={() => {
-              onConfirm(program.id);
-              onClose();
-            }}
+            onClick={handleConfirm}
             style={{
               flex: 1,
               height: 44,
