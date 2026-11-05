@@ -305,6 +305,25 @@ const GlobalStyles = () => (
       -ms-overflow-style: none !important;
       scrollbar-width: none !important;
     }
+
+    /* Responsive UI Back Button rules:
+       On mobile viewports (<= 768px), UI back buttons are hidden to maximize screen space
+       and allow system navigation (hardware back button, edge swipe gestures).
+       On desktop viewports (> 768px), UI back buttons remain visible for mouse interaction. */
+    @media (max-width: 768px) {
+      .ui-back-btn {
+        display: none !important;
+      }
+      .desktop-hide-when-back {
+        display: flex !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .desktop-hide-when-back {
+        display: none !important;
+      }
+    }
   `}</style>
 );
 

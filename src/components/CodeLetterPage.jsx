@@ -32,6 +32,31 @@ const CodeLetterPage = ({
   onBack
 }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const handleOpenPicker = (student) => {
+    setSelectedStudent(student);
+    try {
+      window.history.pushState({ modal: "code-picker" }, "");
+    } catch {}
+  };
+
+  const handleClosePicker = () => {
+    if (window.history.state?.modal === "code-picker") {
+      window.history.back();
+    } else {
+      setSelectedStudent(null);
+    }
+  };
+
+  useEffect(() => {
+    const handlePop = () => {
+      if (selectedStudent) {
+        setSelectedStudent(null);
+      }
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, [selectedStudent]);
   const isOffStage = program?.session === "Off-Stage";
   const autoAssignedRef = useRef(false);
 
@@ -87,6 +112,7 @@ const CodeLetterPage = ({
       >
         <button
           onClick={onBack}
+          className="ui-back-btn"
           style={{
             background: "#ffffff",
             border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -250,7 +276,7 @@ const CodeLetterPage = ({
                   </span>
                 ) : !isOffStage ? (
                   <button
-                    onClick={() => setSelectedStudent(p)}
+                    onClick={() => handleOpenPicker(p)}
                     style={{
                       padding: "6px 16px",
                       borderRadius: 10,
@@ -281,7 +307,7 @@ const CodeLetterPage = ({
           student={selectedStudent}
           remainingLetters={remainingLetters}
           isOpen={!!selectedStudent}
-          onClose={() => setSelectedStudent(null)}
+          onClose={handleClosePicker}
           onAssignCode={onAssignCode}
         />
       )}

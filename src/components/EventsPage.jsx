@@ -58,6 +58,58 @@ const EventsPage = ({
   const [confirmEndProg, setConfirmEndProg] = useState(null);
   const [selectedDetailsProg, setSelectedDetailsProg] = useState(null);
 
+  const handleOpenStreamModal = (prog) => {
+    setStreamModalProg(prog);
+    try {
+      window.history.pushState({ modal: "stream-modal" }, "");
+    } catch {}
+  };
+  const handleCloseStreamModal = () => {
+    if (window.history.state?.modal === "stream-modal") {
+      window.history.back();
+    } else {
+      setStreamModalProg(null);
+    }
+  };
+
+  const handleOpenConfirmEnd = (prog) => {
+    setConfirmEndProg(prog);
+    try {
+      window.history.pushState({ modal: "confirm-end" }, "");
+    } catch {}
+  };
+  const handleCloseConfirmEnd = () => {
+    if (window.history.state?.modal === "confirm-end") {
+      window.history.back();
+    } else {
+      setConfirmEndProg(null);
+    }
+  };
+
+  const handleOpenDetails = (prog) => {
+    setSelectedDetailsProg(prog);
+    try {
+      window.history.pushState({ modal: "program-details" }, "");
+    } catch {}
+  };
+  const handleCloseDetails = () => {
+    if (window.history.state?.modal === "program-details") {
+      window.history.back();
+    } else {
+      setSelectedDetailsProg(null);
+    }
+  };
+
+  useEffect(() => {
+    const onPop = () => {
+      if (streamModalProg) setStreamModalProg(null);
+      if (confirmEndProg) setConfirmEndProg(null);
+      if (selectedDetailsProg) setSelectedDetailsProg(null);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [streamModalProg, confirmEndProg, selectedDetailsProg]);
+
   // Status sort priority: Upcoming (top) -> Running (middle/first) -> Finished/Completed (down)
   const getProgramStatusOrder = (p) => {
     const s = (p.status || "").toLowerCase();
@@ -143,7 +195,7 @@ const EventsPage = ({
   const isCallingUp = false;
 
   const handleSelectUpcoming = (prog) => {
-    setStreamModalProg(prog);
+    handleOpenStreamModal(prog);
   };
 
   // Distinct main categories matching updated base URL (Low, Mid, High, General)
@@ -568,8 +620,7 @@ const EventsPage = ({
                   ? "All Programs"
                   : activeTab === "completed"
                   ? "Completed & Running"
-                  : "Upcoming Programs"}{" "}
-                ({selectedSession})
+                  : "Upcoming"}
               </div>
             </div>
 
@@ -1106,7 +1157,7 @@ const EventsPage = ({
                     return (
                       <div
                         key={p.id}
-                        onClick={() => setSelectedDetailsProg(p)}
+                        onClick={() => handleOpenDetails(p)}
                         style={{
                           padding: "14px 16px",
                           borderRadius: 18,
@@ -1175,7 +1226,7 @@ const EventsPage = ({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setConfirmEndProg(p);
+                                handleOpenConfirmEnd(p);
                               }}
                               style={{
                                 background: "rgba(16, 185, 129, 0.1)",
@@ -1218,10 +1269,11 @@ const EventsPage = ({
         program={streamModalProg}
         participantsCount={streamModalProg ? getParticipantsForProgram(streamModalProg.id).length : 0}
         isOpen={!!streamModalProg}
-        onClose={() => setStreamModalProg(null)}
+        onClose={handleCloseStreamModal}
         onStream={() => {
           if (streamModalProg) {
             const prog = streamModalProg;
+            setStreamModalProg(null);
             onStreamProgram(prog.id);
             if (prog.session === "Off-Stage") {
               if (onOpenAttendance) {
@@ -1236,7 +1288,6 @@ const EventsPage = ({
                 onOpenAttendance(prog);
               }
             }
-            setStreamModalProg(null);
           }
         }}
       />
@@ -1245,7 +1296,7 @@ const EventsPage = ({
       <EndProgramModal
         program={confirmEndProg}
         isOpen={!!confirmEndProg}
-        onClose={() => setConfirmEndProg(null)}
+        onClose={handleCloseConfirmEnd}
         onConfirm={onMarkCompleted}
       />
 
@@ -1253,7 +1304,7 @@ const EventsPage = ({
       <ProgramDetailsModal
         program={selectedDetailsProg}
         isOpen={!!selectedDetailsProg}
-        onClose={() => setSelectedDetailsProg(null)}
+        onClose={handleCloseDetails}
         participants={selectedDetailsProg ? getParticipantsForProgram(selectedDetailsProg.id) : []}
         onUpdateAttendance={updateAttendance}
         onAssignCodeLetter={assignCodeLetter}

@@ -41,6 +41,7 @@ const AttendancePage = ({
       >
         <button
           onClick={onBack}
+          className="ui-back-btn"
           style={{
             background: "#ffffff",
             border: `1px solid ${CARD_BORDER_LIGHT}`,

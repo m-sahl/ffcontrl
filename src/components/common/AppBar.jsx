@@ -1,6 +1,7 @@
 import React from "react";
 import Ic from "./Ic";
 import { CORAL_PRIMARY, EMERALD_SUCCESS, CARD_BORDER_LIGHT, TEXT_PRIMARY_LIGHT, TEXT_MUTED_LIGHT } from "../../styles/DesignTokens";
+import { triggerHaptic } from "../../utils/haptics";
 
 const AppBar = ({
   currentTab,
@@ -71,11 +72,15 @@ const AppBar = ({
           minHeight: 56
         }}
       >
-        {/* Left Section: Back button or Logo + Title */}
+        {/* Left Section: Back button (Desktop only when showBackButton) or Logo + Title */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {showBackButton ? (
+          {showBackButton && (
             <button
-              onClick={onBack}
+              onClick={(e) => {
+                triggerHaptic("light");
+                if (onBack) onBack(e);
+              }}
+              className="ui-back-btn"
               style={{
                 background: "#ffffff",
                 border: `1px solid ${CARD_BORDER_LIGHT}`,
@@ -94,23 +99,24 @@ const AppBar = ({
             >
               <Ic name="back" size={16} />
             </button>
-          ) : (
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 11,
-                background: "linear-gradient(135deg, #f14d4d 0%, #d63333 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                boxShadow: "0 3px 10px rgba(241, 77, 77, 0.3)"
-              }}
-            >
-              <Ic name="zap" size={18} color="#ffffff" />
-            </div>
           )}
+
+          <div
+            className={`appbar-logo ${showBackButton ? "desktop-hide-when-back" : ""}`}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 11,
+              background: "linear-gradient(135deg, #f14d4d 0%, #d63333 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#ffffff",
+              boxShadow: "0 3px 10px rgba(241, 77, 77, 0.3)"
+            }}
+          >
+            <Ic name="zap" size={18} color="#ffffff" />
+          </div>
 
           <div>
             <div
@@ -162,7 +168,10 @@ const AppBar = ({
           )}
 
           <button
-            onClick={onOpenSettings}
+            onClick={(e) => {
+              triggerHaptic("light");
+              if (onOpenSettings) onOpenSettings(e);
+            }}
             title="Portal Settings"
             style={{
               background: "#ffffff",

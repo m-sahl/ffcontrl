@@ -28,6 +28,7 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
       >
         <button
           onClick={onBack}
+          className="ui-back-btn"
           style={{
             background: "#ffffff",
             border: `1px solid ${CARD_BORDER_LIGHT}`,
