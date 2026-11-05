@@ -300,60 +300,6 @@ const EventsPage = ({
         </div>
       ) : (
         <>
-          {/* Off-Stage Top Bar Header */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "12px 16px",
-              background: "#ffffff",
-              borderRadius: 18,
-              border: `1.2px solid ${CARD_BORDER_LIGHT}`,
-              boxShadow: "0 2px 8px rgba(15, 23, 42, 0.03)",
-              marginBottom: 18
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 11,
-                  background: "rgba(99, 102, 241, 0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#6366f1"
-                }}
-              >
-                <Ic name="palette" size={20} color="#6366f1" />
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 800,
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    color: "#6366f1"
-                  }}
-                >
-                  OFF-STAGE DESK
-                </div>
-                <div
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 800,
-                    color: TEXT_PRIMARY_LIGHT,
-                    letterSpacing: "-0.3px"
-                  }}
-                >
-                  Off-Stage Programs
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Animated Session Switch Wrapper */}
           <div key={selectedSession} className="anim-session-switch">
         
