@@ -4,7 +4,7 @@ import { ConvexProvider, ConvexReactClient } from "convex/react";
 import App from "./App";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 
-const convexUrl = import.meta.env.VITE_CONVEX_URL || "https://valuable-egret-928.convex.cloud";
+const convexUrl = import.meta.env.VITE_CONVEX_URL || "https://scrupulous-goldfish-520.convex.cloud";
 const convex = new ConvexReactClient(convexUrl);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
