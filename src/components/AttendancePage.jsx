@@ -182,7 +182,7 @@ const AttendancePage = ({
                 transition: "all 0.15s ease"
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
                 {/* Checkbox indicator */}
                 <div
                   style={{
@@ -201,7 +201,7 @@ const AttendancePage = ({
                   {p.isPresent && <Ic name="check" size={14} color="#ffffff" />}
                 </div>
 
-                <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
                   <span
                     style={{
                       fontSize: 12,
@@ -211,7 +211,7 @@ const AttendancePage = ({
                       border: "1px solid rgba(241, 77, 77, 0.2)",
                       padding: "2px 7px",
                       borderRadius: 6,
-                      marginRight: 8
+                      flexShrink: 0
                     }}
                   >
                     #{p.chestNo}
@@ -220,7 +220,10 @@ const AttendancePage = ({
                     style={{
                       fontSize: 14,
                       fontWeight: 700,
-                      color: p.isPresent ? TEXT_PRIMARY_LIGHT : "#94a3b8"
+                      color: p.isPresent ? TEXT_PRIMARY_LIGHT : "#94a3b8",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis"
                     }}
                   >
                     {p.name}

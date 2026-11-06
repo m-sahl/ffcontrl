@@ -168,7 +168,6 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
                 READY
               </span>
             )}
-            <Ic name="chevronRight" size={16} color={TEXT_MUTED_LIGHT} />
           </div>
         </div>
 

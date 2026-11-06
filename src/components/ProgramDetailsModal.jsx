@@ -1152,8 +1152,6 @@ const ProgramDetailsModal = ({
               setShowConfirmReopen(false);
               if (onReopenProgram && program) {
                 await onReopenProgram(program.id);
-                setToastMessage("Program resumed as Running!");
-                setTimeout(() => setToastMessage(null), 3000);
               }
             }}
             style={{
