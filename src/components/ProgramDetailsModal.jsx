@@ -30,7 +30,9 @@ const ProgramDetailsModal = ({
   onClose,
   participants = [],
   onUpdateAttendance,
-  onAssignCodeLetter
+  onAssignCodeLetter,
+  onSaveRoster,
+  onReopenProgram
 }) => {
   // isEditing controls whether we show the initial read-only coded participants sheet,
   // or the edit mode showing remaining/absent students to add latecomers
@@ -39,6 +41,9 @@ const ProgramDetailsModal = ({
   const [showConfirmUpdate, setShowConfirmUpdate] = useState(false);
   const [showNoChangesNotice, setShowNoChangesNotice] = useState(false);
   const [editSnapshot, setEditSnapshot] = useState(null);
+  const [showConfirmReopen, setShowConfirmReopen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
 
   const isRunning = program?.status === "Running";
   const catColor = program ? getCategoryColor(program.category) : "";
@@ -503,29 +508,49 @@ const ProgramDetailsModal = ({
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={handleClose}
-                  style={{
-                    width: "100%",
-                    height: 46,
-                    borderRadius: 14,
-                    background: "#f1f5f9",
-                    border: `1.2px solid ${CARD_BORDER_LIGHT}`,
-                    color: TEXT_PRIMARY_LIGHT,
-                    fontWeight: 800,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)",
-                    transition: "all 0.15s ease"
-                  }}
-                >
-                  <Ic name="checkCircle" size={16} color={CORAL_PRIMARY} />
-                  <span>Close</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      triggerHaptic("medium");
+                      setShowConfirmReopen(true);
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 44,
+                      borderRadius: 14,
+                      background: "rgba(16, 185, 129, 0.12)",
+                      border: "1.2px solid rgba(16, 185, 129, 0.35)",
+                      color: "#065f46",
+                      fontWeight: 800,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 7,
+                      boxShadow: "0 2px 8px rgba(16, 185, 129, 0.15)"
+                    }}
+                  >
+                    <Ic name="play" size={14} color="#065f46" /> Resume Program
+                  </button>
+
+                  <button
+                    onClick={handleClose}
+                    style={{
+                      padding: "0 22px",
+                      height: 44,
+                      borderRadius: 14,
+                      background: "#ffffff",
+                      border: `1.2px solid ${CARD_BORDER_LIGHT}`,
+                      color: TEXT_PRIMARY_LIGHT,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer"
+                    }}
+                  >
+                    Close
+                  </button>
+                </>
               )}
             </div>
           </>
@@ -885,8 +910,20 @@ const ProgramDetailsModal = ({
           </button>
           <button
             type="button"
-            onClick={() => {
+            disabled={isSaving}
+            onClick={async () => {
               triggerHaptic("success");
+              setIsSaving(true);
+              if (onSaveRoster && program) {
+                try {
+                  await onSaveRoster(program.id);
+                  setToastMessage("Roster updated & synced to Cloud!");
+                  setTimeout(() => setToastMessage(null), 3000);
+                } catch (err) {
+                  console.warn("Could not save roster:", err);
+                }
+              }
+              setIsSaving(false);
               setShowConfirmUpdate(false);
               setIsEditing(false);
               setEditSnapshot(null);
@@ -901,11 +938,12 @@ const ProgramDetailsModal = ({
               color: "#ffffff",
               fontWeight: 800,
               fontSize: 13,
-              cursor: "pointer",
+              cursor: isSaving ? "not-allowed" : "pointer",
+              opacity: isSaving ? 0.7 : 1,
               boxShadow: "0 3px 10px rgba(16, 185, 129, 0.3)"
             }}
           >
-            Yes, Update
+            {isSaving ? "Saving..." : "Yes, Update"}
           </button>
         </div>
       </div>
@@ -1011,6 +1049,157 @@ const ProgramDetailsModal = ({
           OK
         </button>
       </div>
+    </div>,
+    document.body
+  )}
+
+  {/* Reopen Program Confirmation Dialog */}
+  {showConfirmReopen && createPortal(
+    <div
+      className="anim-fade"
+      onClick={() => setShowConfirmReopen(false)}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(15, 23, 42, 0.65)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        zIndex: 250,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20
+      }}
+    >
+      <div
+        className="anim-pop"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%",
+          maxWidth: 360,
+          background: "#ffffff",
+          borderRadius: 20,
+          padding: "24px 22px 20px",
+          boxShadow: "0 20px 48px rgba(15, 23, 42, 0.35)",
+          border: `1.2px solid ${CARD_BORDER_LIGHT}`,
+          textAlign: "center"
+        }}
+      >
+        <div
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 14,
+            background: "rgba(16, 185, 129, 0.12)",
+            color: EMERALD_SUCCESS,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto 14px"
+          }}
+        >
+          <Ic name="play" size={24} color={EMERALD_SUCCESS} />
+        </div>
+
+        <h4
+          style={{
+            fontSize: 17,
+            fontWeight: 800,
+            color: TEXT_PRIMARY_LIGHT,
+            marginBottom: 8,
+            letterSpacing: "-0.2px"
+          }}
+        >
+          Resume this Program?
+        </h4>
+
+        <p
+          style={{
+            fontSize: 13,
+            color: TEXT_MUTED_LIGHT,
+            lineHeight: 1.5,
+            marginBottom: 20
+          }}
+        >
+          This will change status back to <strong>Running</strong>, restore its live session stream, and allow regular desk operations.
+        </p>
+
+        <div style={{ display: "flex", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("light");
+              setShowConfirmReopen(false);
+            }}
+            style={{
+              flex: 1,
+              height: 44,
+              borderRadius: 12,
+              border: `1.2px solid ${CARD_BORDER_LIGHT}`,
+              background: "#ffffff",
+              color: TEXT_MUTED_LIGHT,
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: "pointer"
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              triggerHaptic("success");
+              setShowConfirmReopen(false);
+              if (onReopenProgram && program) {
+                await onReopenProgram(program.id);
+              }
+            }}
+            style={{
+              flex: 1,
+              height: 44,
+              borderRadius: 12,
+              border: "none",
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "#ffffff",
+              fontWeight: 800,
+              fontSize: 13,
+              cursor: "pointer",
+              boxShadow: "0 3px 10px rgba(16, 185, 129, 0.3)"
+            }}
+          >
+            Yes, Resume
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  )}
+
+  {/* Sync Success Toast */}
+  {toastMessage && createPortal(
+    <div
+      className="anim-fade"
+      style={{
+        position: "fixed",
+        bottom: 24,
+        left: "50%",
+        transform: "translateX(-50%)",
+        background: "#0f172a",
+        color: "#ffffff",
+        padding: "10px 18px",
+        borderRadius: 14,
+        fontSize: 13,
+        fontWeight: 700,
+        zIndex: 300,
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.28)",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        border: "1px solid rgba(255, 255, 255, 0.15)"
+      }}
+    >
+      <Ic name="checkCircle" size={16} color={EMERALD_SUCCESS} />
+      <span>{toastMessage}</span>
     </div>,
     document.body
   )}

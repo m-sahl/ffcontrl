@@ -37,7 +37,9 @@ const EventsPage = ({
     updateAttendance,
     batchAttendance,
     assignCodeLetter,
-    resetCodeLetters
+    resetCodeLetters,
+    saveProgramRoster,
+    reopenProgram
   } = useDesk();
 
   const [internalSession, setInternalSession] = useState("Stage");
@@ -358,7 +360,6 @@ const EventsPage = ({
           >
             <Ic name="palette" size={18} color="#ffffff" />
             <span>Go to Off-Stage Desk</span>
-            <Ic name="chevronRight" size={16} color="#ffffff" />
           </button>
         </div>
       ) : (
@@ -498,21 +499,18 @@ const EventsPage = ({
                 >
                   <Ic name="layers" size={20} />
                 </div>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.2px" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     All Programs
                   </div>
-                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 3 }}>
                     {sessionPrograms.length} programs in {selectedSession} (All Categories)
                   </div>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span className="badge badge-slate" style={{ fontSize: 11 }}>
-                  {sessionPrograms.length}
-                </span>
-                <Ic name="chevronRight" size={18} color="#94a3b8" />
-              </div>
+              <span className="badge badge-slate" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
+                {sessionPrograms.length}
+              </span>
             </button>
 
             {/* Card 2: Upcoming Programs */}
@@ -536,21 +534,18 @@ const EventsPage = ({
                 >
                   <Ic name="clock" size={20} color={CORAL_PRIMARY} />
                 </div>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.2px" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     Upcoming Programs
                   </div>
-                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 3 }}>
                     {upcomingPrograms.length} pending to call up across all categories
                   </div>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span className="badge badge-coral" style={{ fontSize: 11 }}>
-                  {upcomingPrograms.length}
-                </span>
-                <Ic name="chevronRight" size={18} color="#94a3b8" />
-              </div>
+              <span className="badge badge-coral" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
+                {upcomingPrograms.length}
+              </span>
             </button>
 
             {/* Card 3: Completed & Running Programs */}
@@ -574,21 +569,18 @@ const EventsPage = ({
                 >
                   <Ic name="checkCircle" size={20} color={EMERALD_SUCCESS} />
                 </div>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.2px" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     Completed & Running
                   </div>
-                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 3 }}>
                     {runningPrograms.length} running • {completedPrograms.length} finished
                   </div>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span className="badge badge-emerald" style={{ fontSize: 11 }}>
-                  {runningPrograms.length + completedPrograms.length}
-                </span>
-                <Ic name="chevronRight" size={18} color="#94a3b8" />
-              </div>
+              <span className="badge badge-emerald" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
+                {runningPrograms.length + completedPrograms.length}
+              </span>
             </button>
           </div>
         )}
@@ -1200,12 +1192,12 @@ const EventsPage = ({
                           opacity: isRunning ? 1 : 0.95
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
                           <div
                             style={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: 10,
+                              width: 38,
+                              height: 38,
+                              borderRadius: 11,
                               background: isRunning ? "rgba(16, 185, 129, 0.1)" : "#f1f4f9",
                               display: "flex",
                               alignItems: "center",
@@ -1250,7 +1242,7 @@ const EventsPage = ({
                         </div>
 
                         {isRunning ? (
-                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1261,23 +1253,22 @@ const EventsPage = ({
                                 color: "#065f46",
                                 fontWeight: 800,
                                 fontSize: 12,
-                                padding: "7px 14px",
+                                padding: "7px 15px",
                                 borderRadius: 10,
                                 border: "1px solid rgba(16, 185, 129, 0.3)",
                                 cursor: "pointer",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: 4
+                                gap: 5,
+                                boxShadow: "0 1px 4px rgba(16, 185, 129, 0.12)"
                               }}
                             >
                               <Ic name="checkCircle" size={13} color="#065f46" /> End
                             </button>
-                            <Ic name="chevronRight" size={16} color="#94a3b8" />
                           </div>
                         ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span className="badge badge-slate">Finished</span>
-                            <Ic name="chevronRight" size={16} color="#94a3b8" />
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                            <span className="badge badge-slate" style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px" }}>Finished</span>
                           </div>
                         )}
                       </div>
@@ -1330,12 +1321,14 @@ const EventsPage = ({
 
       {/* Program Attendance & Code Letters Details Modal (Late Entry) */}
       <ProgramDetailsModal
-        program={selectedDetailsProg}
+        program={programs.find(p => p.id === selectedDetailsProg?.id) || selectedDetailsProg}
         isOpen={!!selectedDetailsProg}
         onClose={handleCloseDetails}
         participants={selectedDetailsProg ? getParticipantsForProgram(selectedDetailsProg.id) : []}
         onUpdateAttendance={updateAttendance}
         onAssignCodeLetter={assignCodeLetter}
+        onSaveRoster={saveProgramRoster}
+        onReopenProgram={reopenProgram}
       />
     </div>
   );

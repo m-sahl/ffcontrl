@@ -154,7 +154,7 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
                 boxShadow: "0 1px 4px rgba(15, 23, 42, 0.02)"
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                 <span
                   style={{
                     fontSize: 12,
@@ -174,7 +174,10 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
                   style={{
                     fontSize: 14,
                     fontWeight: 700,
-                    color: TEXT_PRIMARY_LIGHT
+                    color: TEXT_PRIMARY_LIGHT,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   {p.name}

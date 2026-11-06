@@ -29,7 +29,7 @@ const INITIAL_STUDENTS = {};
 
 const INITIAL_REGISTRATIONS = [];
 
-const CONVEX_SITE_URL = import.meta.env.VITE_CONVEX_SITE_URL || "https://scrupulous-goldfish-520.convex.site";
+const CONVEX_SITE_URL = import.meta.env.VITE_CONVEX_SITE_URL || "https://outgoing-sandpiper-663.convex.site";
 
 const DeskContext = createContext();
 export const useDesk = () => useContext(DeskContext);
@@ -476,6 +476,89 @@ export const DeskProvider = ({ children }) => {
     }
   };
 
+  const saveProgramRoster = async (programId) => {
+    const prog = programs.find(p => p.id === programId);
+    const currentParts = getParticipantsForProgram(programId);
+    const participating = currentParts.filter(p => p.isPresent === true || !!p.codeLetter);
+
+    const progState = deskState[programId] || { attendance: {}, codeLetters: {} };
+    const updatedCodes = { ...progState.codeLetters };
+    const updatedAttendance = { ...progState.attendance };
+
+    participating.forEach((st, idx) => {
+      updatedAttendance[st.id] = true;
+      if (!updatedCodes[st.id]) {
+        updatedCodes[st.id] = st.codeLetter || getLetterCode(idx);
+      }
+    });
+
+    setDeskState(prev => ({
+      ...prev,
+      [programId]: {
+        attendance: updatedAttendance,
+        codeLetters: updatedCodes
+      }
+    }));
+
+    const history = participating.map((st, idx) => {
+      const code = updatedCodes[st.id] || st.codeLetter || getLetterCode(idx);
+      return {
+        studentId: String(st.id),
+        chestNo: String(st.chestNo || ""),
+        name: st.name || "",
+        groupId: st.groupId || "",
+        groupName: st.groupName || "",
+        codeLetter: String(code).trim().toUpperCase()
+      };
+    });
+
+    setPrograms(prev => prev.map(p => p.id === programId ? {
+      ...p,
+      participantsHistory: history,
+      codeAllocations: history
+    } : p));
+
+    if (updateParticipantsHistoryMutation) {
+      try {
+        await updateParticipantsHistoryMutation({
+          id: programId,
+          participantsHistory: history,
+          codeAllocations: history,
+          status: prog?.status || "Completed"
+        });
+      } catch (err) {
+        console.warn("Could not sync updated roster to convex:", err);
+      }
+    }
+    return history;
+  };
+
+  const reopenProgram = async (programId) => {
+    const prog = programs.find(p => p.id === programId);
+    const session = prog ? prog.session : "Stage";
+
+    setPrograms(prev => prev.map(p => p.id === programId ? {
+      ...p,
+      status: "Running"
+    } : p));
+
+    setActiveStreams(prev => ({
+      ...prev,
+      [session]: programId
+    }));
+
+    if (updateProgramStatusMutation) {
+      try {
+        await updateProgramStatusMutation({
+          id: programId,
+          status: "Running"
+        });
+      } catch (err) {
+        console.warn("Could not reopen program status in convex:", err);
+      }
+    }
+  };
+
   // Helper to fetch participant list for a program
   const getParticipantsForProgram = (programId) => {
     if (!programId) return [];
@@ -502,8 +585,11 @@ export const DeskProvider = ({ children }) => {
           const st = (groupStudents && groupStudents.find(s => s.id === id)) ||
                      allStudentsList.find(s => s.id === id);
 
-          const isPresent = pState.attendance[id] !== undefined ? pState.attendance[id] : true;
           const histMatch = (prog?.participantsHistory || prog?.codeAllocations || []).find(h => String(h.studentId) === String(id));
+          const isPresent = pState.attendance[id] !== undefined
+            ? pState.attendance[id]
+            : (isCompleted ? (!!histMatch || !!pState.codeLetters[id]) : true);
+
           return {
             id: id,
             name: st?.name || `Participant (${id})`,
@@ -573,6 +659,8 @@ export const DeskProvider = ({ children }) => {
       finishCodeLetters,
       resetToTrialData,
       markProgramCompleted,
+      saveProgramRoster,
+      reopenProgram,
       getParticipantsForProgram
     }}>
       {children}
