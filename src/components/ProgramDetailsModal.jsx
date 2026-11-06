@@ -115,6 +115,7 @@ const ProgramDetailsModal = ({
 
   // Start edit mode with snapshot to track whether any updates actually occur
   const handleStartEditing = () => {
+    if (!isRunning) return;
     triggerHaptic("medium");
     const snapshot = {};
     participants.forEach(p => {
@@ -509,38 +510,16 @@ const ProgramDetailsModal = ({
               ) : (
                 <>
                   <button
-                    onClick={handleStartEditing}
-                    style={{
-                      flex: 1.3,
-                      height: 44,
-                      borderRadius: 14,
-                      background: "linear-gradient(135deg, #f14d4d 0%, #dc2626 100%)",
-                      border: "none",
-                      color: "#ffffff",
-                      fontWeight: 800,
-                      fontSize: 13,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 7,
-                      boxShadow: "0 4px 14px rgba(241, 77, 77, 0.28)"
-                    }}
-                  >
-                    <Ic name="edit" size={14} color="#ffffff" /> Edit / Add Late Student
-                  </button>
-
-                  <button
                     onClick={() => {
                       triggerHaptic("medium");
                       setShowConfirmReopen(true);
                     }}
                     style={{
-                      flex: 0.9,
+                      flex: 1,
                       height: 44,
                       borderRadius: 14,
-                      background: "rgba(16, 185, 129, 0.1)",
-                      border: "1.2px solid rgba(16, 185, 129, 0.3)",
+                      background: "rgba(16, 185, 129, 0.12)",
+                      border: "1.2px solid rgba(16, 185, 129, 0.35)",
                       color: "#065f46",
                       fontWeight: 800,
                       fontSize: 13,
@@ -548,16 +527,17 @@ const ProgramDetailsModal = ({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: 5
+                      gap: 7,
+                      boxShadow: "0 2px 8px rgba(16, 185, 129, 0.15)"
                     }}
                   >
-                    <Ic name="play" size={13} color="#065f46" /> Resume
+                    <Ic name="play" size={14} color="#065f46" /> Resume Program
                   </button>
 
                   <button
                     onClick={handleClose}
                     style={{
-                      padding: "0 16px",
+                      padding: "0 22px",
                       height: 44,
                       borderRadius: 14,
                       background: "#ffffff",
@@ -1172,8 +1152,9 @@ const ProgramDetailsModal = ({
               setShowConfirmReopen(false);
               if (onReopenProgram && program) {
                 await onReopenProgram(program.id);
+                setToastMessage("Program resumed as Running!");
+                setTimeout(() => setToastMessage(null), 3000);
               }
-              handleClose();
             }}
             style={{
               flex: 1,
