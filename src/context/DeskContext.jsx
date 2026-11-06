@@ -29,7 +29,7 @@ const INITIAL_STUDENTS = {};
 
 const INITIAL_REGISTRATIONS = [];
 
-const CONVEX_SITE_URL = import.meta.env.VITE_CONVEX_SITE_URL || "https://scrupulous-goldfish-520.convex.site";
+const CONVEX_SITE_URL = import.meta.env.VITE_CONVEX_SITE_URL || "https://outgoing-sandpiper-663.convex.site";
 
 const DeskContext = createContext();
 export const useDesk = () => useContext(DeskContext);
