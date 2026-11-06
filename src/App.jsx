@@ -27,6 +27,7 @@ const MainContent = ({ onLogout }) => {
     finishCodeLetters,
     resetToTrialData,
     markProgramCompleted,
+    saveProgramRoster,
     getParticipantsForProgram
   } = useDesk();
 
@@ -179,6 +180,9 @@ const MainContent = ({ onLogout }) => {
       // Only set status to Running if it was not already Completed
       if (activeProgram.status !== "Completed" && activeProgram.status !== "published") {
         finishCodeLetters(activeProgram.id);
+      } else {
+        // If it was already completed, re-seal and sync the updated roster without resetting status
+        saveProgramRoster(activeProgram.id);
       }
       if (activeProgram.session) {
         handleSelectSession(activeProgram.session);

@@ -37,7 +37,9 @@ const EventsPage = ({
     updateAttendance,
     batchAttendance,
     assignCodeLetter,
-    resetCodeLetters
+    resetCodeLetters,
+    saveProgramRoster,
+    reopenProgram
   } = useDesk();
 
   const [internalSession, setInternalSession] = useState("Stage");
@@ -1330,12 +1332,14 @@ const EventsPage = ({
 
       {/* Program Attendance & Code Letters Details Modal (Late Entry) */}
       <ProgramDetailsModal
-        program={selectedDetailsProg}
+        program={programs.find(p => p.id === selectedDetailsProg?.id) || selectedDetailsProg}
         isOpen={!!selectedDetailsProg}
         onClose={handleCloseDetails}
         participants={selectedDetailsProg ? getParticipantsForProgram(selectedDetailsProg.id) : []}
         onUpdateAttendance={updateAttendance}
         onAssignCodeLetter={assignCodeLetter}
+        onSaveRoster={saveProgramRoster}
+        onReopenProgram={reopenProgram}
       />
     </div>
   );
