@@ -14,11 +14,13 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
   const [flippedIndex, setFlippedIndex] = useState(null);
   const [assignedLetter, setAssignedLetter] = useState(null);
   const [isShuffling, setIsShuffling] = useState(false);
+  const [shuffleCount, setShuffleCount] = useState(0);
 
   useEffect(() => {
     setFlippedIndex(null);
     setAssignedLetter(null);
     setIsShuffling(false);
+    setShuffleCount(0);
   }, [student, isOpen]);
 
   if (!isOpen || !student) return null;
@@ -26,12 +28,21 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
   const cardCount = remainingLetters.length;
 
   const handleShuffleClick = () => {
-    if (flippedIndex !== null || assignedLetter || cardCount === 0) return;
-    triggerHaptic("light");
+    if (flippedIndex !== null || assignedLetter || cardCount === 0 || isShuffling) return;
+    triggerHaptic("medium");
     setIsShuffling(true);
+    setShuffleCount(prev => prev + 1);
+
+    // Subtle tactile feedback during card ripple
     setTimeout(() => {
+      triggerHaptic("light");
+    }, 280);
+
+    // Completion snap and enable interaction
+    setTimeout(() => {
+      triggerHaptic("success");
       setIsShuffling(false);
-    }, 380);
+    }, 600);
   };
 
   const handleCardClick = (idx) => {
@@ -145,7 +156,7 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
           #{student.chestNo} {student.name}
         </div>
 
-        <div style={{ fontSize: 13, color: TEXT_MUTED_LIGHT, marginBottom: 14 }}>
+        <div style={{ fontSize: 13, color: TEXT_MUTED_LIGHT, marginBottom: 16 }}>
           {assignedLetter ? (
             <span style={{ color: EMERALD_SUCCESS, fontWeight: 800, fontSize: 14 }}>
               Assigned Code Letter {assignedLetter}!
@@ -155,63 +166,43 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
           )}
         </div>
 
-        {/* Shuffle Button inside Modal */}
-        {!assignedLetter && (
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-            <button
-              onClick={handleShuffleClick}
-              disabled={isShuffling}
-              style={{
-                padding: "7px 16px",
-                borderRadius: 999,
-                border: `1px solid ${CARD_BORDER_LIGHT}`,
-                background: "#f8fafc",
-                color: CORAL_PRIMARY,
-                fontWeight: 700,
-                fontSize: 11,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.02)"
-              }}
-            >
-              <Ic name="shuffle" size={13} color={CORAL_PRIMARY} />
-              {isShuffling ? "Shuffling Cards..." : "Shuffle Mystery Cards"}
-            </button>
-          </div>
-        )}
-
         {/* REVEALABLE FACE DOWN CARDS GRID */}
         <div
           style={{
             background: "#f8fafc",
-            border: `1px solid ${CARD_BORDER_LIGHT}`,
+            border: `1.5px solid ${isShuffling ? "rgba(241, 77, 77, 0.3)" : CARD_BORDER_LIGHT}`,
             borderRadius: 20,
             padding: "20px 14px",
-            marginBottom: 16,
+            marginBottom: 14,
             display: "flex",
             gap: 12,
             flexWrap: "wrap",
             justifyContent: "center",
             alignItems: "center",
             minHeight: 140,
-            transform: isShuffling ? "scale(0.97) rotate(-0.5deg)" : "scale(1)",
-            transition: "transform 0.2s ease"
+            boxShadow: isShuffling ? "0 4px 20px rgba(241, 77, 77, 0.08)" : "none",
+            transform: isShuffling ? "scale(0.99)" : "scale(1)",
+            transition: "all 0.25s ease"
           }}
         >
           {Array.from({ length: cardCount }).map((_, idx) => {
             const isFlipped = flippedIndex === idx;
+            const shuffleDirClass = idx % 2 === 0 ? "shuffling-left" : "shuffling-right";
+            const staggerDelay = `${(idx % 5) * 32}ms`;
+
             return (
               <div
-                key={idx}
-                className={`flip-card ${isFlipped ? "flipped" : ""}`}
+                key={`${idx}-${shuffleCount}`}
+                className={`flip-card ${isFlipped ? "flipped" : ""} ${isShuffling ? shuffleDirClass : ""}`}
+                style={{
+                  animationDelay: isShuffling ? staggerDelay : "0ms"
+                }}
                 onClick={() => handleCardClick(idx)}
               >
                 <div className="flip-card-inner">
                   {/* Front Face-Down Card */}
                   <div className="flip-card-front">
-                    ?
+                    <span className="mystery-question-mark">?</span>
                   </div>
 
                   {/* Back Face-Up Card */}
@@ -224,9 +215,56 @@ const CodePickerModal = ({ student, remainingLetters = [], isOpen, onClose, onAs
           })}
         </div>
 
-        <div style={{ fontSize: 11, color: TEXT_MUTED_LIGHT, fontWeight: 500 }}>
+        {/* Status / Instructions */}
+        <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginBottom: assignedLetter ? 4 : 16 }}>
           {assignedLetter ? "Saving assignment..." : "Tap any mystery card to flip and assign spot code"}
         </div>
+
+        {/* Big Awesome Shuffle Button at Bottom of Modal */}
+        {!assignedLetter && (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <button
+              type="button"
+              className="btn-modal-shuffle"
+              onClick={handleShuffleClick}
+              disabled={isShuffling}
+              style={{
+                width: "100%",
+                maxWidth: 360,
+                height: 50,
+                borderRadius: 16,
+                border: isShuffling ? "1.5px solid rgba(241, 77, 77, 0.45)" : `1.5px solid rgba(241, 77, 77, 0.28)`,
+                background: isShuffling ? "rgba(241, 77, 77, 0.12)" : "rgba(241, 77, 77, 0.06)",
+                color: CORAL_PRIMARY,
+                fontWeight: 800,
+                fontSize: 15,
+                letterSpacing: "-0.2px",
+                cursor: isShuffling ? "default" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+                boxShadow: isShuffling
+                  ? "0 4px 18px rgba(241, 77, 77, 0.2)"
+                  : "0 2px 8px rgba(241, 77, 77, 0.08)",
+                transform: isShuffling ? "scale(0.98)" : "scale(1)",
+                transition: "all 0.22s cubic-bezier(0.16, 1, 0.3, 1)"
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  animation: isShuffling ? "spinShuffle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)" : "none"
+                }}
+              >
+                <Ic name="shuffle" size={19} color={CORAL_PRIMARY} />
+              </span>
+              <span>{isShuffling ? "Shuffling..." : "Shuffle"}</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>,
     document.body

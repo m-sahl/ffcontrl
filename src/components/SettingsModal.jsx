@@ -89,7 +89,7 @@ const SettingsModal = ({ isOpen, onClose, onLockDesk }) => {
                 Operator Session
               </h3>
               <p style={{ fontSize: 11, color: TEXT_MUTED_LIGHT }}>
-                FestFlow Control Desk
+                Cogniz Desk
               </p>
             </div>
           </div>

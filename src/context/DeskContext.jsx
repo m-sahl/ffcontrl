@@ -588,7 +588,7 @@ export const DeskProvider = ({ children }) => {
           const histMatch = (prog?.participantsHistory || prog?.codeAllocations || []).find(h => String(h.studentId) === String(id));
           const isPresent = pState.attendance[id] !== undefined
             ? pState.attendance[id]
-            : (isCompleted ? (!!histMatch || !!pState.codeLetters[id]) : true);
+            : (!!pState.codeLetters[id] || !!histMatch);
 
           return {
             id: id,

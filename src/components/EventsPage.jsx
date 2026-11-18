@@ -26,6 +26,8 @@ const EventsPage = ({
   activeTab: propActiveTab,
   onSelectTab,
   initialTab = null,
+  selectedCategory: propSelectedCategory,
+  onSelectCategory,
   getParticipantsForProgram,
   onStreamProgram,
   onOpenCallList,
@@ -55,7 +57,13 @@ const EventsPage = ({
     if (onSelectTab) onSelectTab(tab);
     setInternalActiveTab(tab);
   };
-  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const [internalCategory, setInternalCategory] = useState("All");
+  const selectedCategory = propSelectedCategory !== undefined ? propSelectedCategory : internalCategory;
+  const setSelectedCategory = (cat) => {
+    if (onSelectCategory) onSelectCategory(cat);
+    setInternalCategory(cat);
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [streamModalProg, setStreamModalProg] = useState(null);
   const [confirmEndProg, setConfirmEndProg] = useState(null);
@@ -211,10 +219,6 @@ const EventsPage = ({
   // Distinct main categories matching updated base URL (Low, Mid, High, General)
   const categoryOrder = ["Low", "Mid", "High", "General"];
 
-  const offStageRunningCount = programs.filter(
-    p => p.session === "Off-Stage" && (p.status || "").toLowerCase() === "running"
-  ).length;
-
   return (
     <div
       className="anim-fade"
@@ -224,148 +228,8 @@ const EventsPage = ({
         padding: "16px 16px 140px"
       }}
     >
-      {/* Stage Session Opening Soon View vs Off-Stage Active Session */}
-      {selectedSession === "Stage" ? (
-        /* Stage Session Opening Soon View — Stage is not started yet, shows Opening Soon message + Navigator into Off-Stage */
-        <div
-          className="anim-fade"
-          style={{
-            margin: "20px 0 32px",
-            padding: "48px 24px 40px",
-            background: "#ffffff",
-            borderRadius: 24,
-            border: `1.2px solid ${CARD_BORDER_LIGHT}`,
-            boxShadow: "0 10px 30px rgba(15, 23, 42, 0.04)",
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
-          }}
-        >
-          {/* Theater Clock Squircle Icon */}
-          <div
-            style={{
-              width: 76,
-              height: 76,
-              borderRadius: 22,
-              background: "linear-gradient(135deg, rgba(241, 77, 77, 0.12) 0%, rgba(241, 77, 77, 0.04) 100%)",
-              border: "1.5px solid rgba(241, 77, 77, 0.25)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: CORAL_PRIMARY,
-              marginBottom: 20,
-              boxShadow: "0 8px 22px rgba(241, 77, 77, 0.15)"
-            }}
-          >
-            <Ic name="clock" size={36} color={CORAL_PRIMARY} />
-          </div>
-
-          {/* Pill Eyebrow */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "rgba(241, 77, 77, 0.08)",
-              border: "1px solid rgba(241, 77, 77, 0.2)",
-              padding: "4px 14px",
-              borderRadius: 999,
-              color: CORAL_PRIMARY,
-              fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              marginBottom: 14
-            }}
-          >
-            STAGE SESSION
-          </div>
-
-          {/* Main Title */}
-          <h2
-            style={{
-              fontSize: 26,
-              fontWeight: 800,
-              color: TEXT_PRIMARY_LIGHT,
-              letterSpacing: "-0.6px",
-              margin: "0 0 10px",
-              lineHeight: 1.2
-            }}
-          >
-            Opening Soon
-          </h2>
-
-          {/* Description */}
-          <p
-            style={{
-              fontSize: 14,
-              color: TEXT_MUTED_LIGHT,
-              lineHeight: 1.55,
-              maxWidth: 360,
-              margin: "0 auto 24px"
-            }}
-          >
-            Stage programs have not started yet. The off-stage competitions are actively live right now.
-          </p>
-
-          {/* Live indicator if off-stage competitions are running */}
-          {offStageRunningCount > 0 && (
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                background: "rgba(16, 185, 129, 0.08)",
-                border: "1px solid rgba(16, 185, 129, 0.25)",
-                padding: "8px 16px",
-                borderRadius: 14,
-                color: "#065f46",
-                fontSize: 12,
-                fontWeight: 700,
-                marginBottom: 24
-              }}
-            >
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
-              <span><strong>{offStageRunningCount} Off-Stage Competitions</strong> currently running live</span>
-            </div>
-          )}
-
-          {/* Dedicated Navigator Button into Off-Stage Page */}
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic("medium");
-              setSelectedSession("Off-Stage");
-            }}
-            style={{
-              width: "100%",
-              maxWidth: 320,
-              padding: "14px 22px",
-              borderRadius: 16,
-              border: "none",
-              background: "linear-gradient(135deg, #f14d4d 0%, #dc2626 100%)",
-              color: "#ffffff",
-              fontSize: 14,
-              fontWeight: 800,
-              letterSpacing: "-0.2px",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              boxShadow: "0 6px 20px rgba(241, 77, 77, 0.35)",
-              transition: "transform 0.15s ease"
-            }}
-          >
-            <Ic name="palette" size={18} color="#ffffff" />
-            <span>Go to Off-Stage Desk</span>
-          </button>
-        </div>
-      ) : (
-        <>
-          {/* Animated Session Switch Wrapper */}
-          <div key={selectedSession} className="anim-session-switch">
+      {/* Animated Session Switch Wrapper */}
+      <div key={selectedSession} className="anim-session-switch">
         
         {/* Active Running Banner — Hidden on Completed & Running page where active events are already listed */}
         {activeTab !== "completed" && currentBannerProg && (
@@ -1280,8 +1144,6 @@ const EventsPage = ({
           </div>
         )}
       </div>
-    </>
-  )}
 
       {/* Stream Call Up Modal */}
       <StreamModal
