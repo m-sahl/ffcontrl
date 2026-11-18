@@ -172,7 +172,7 @@ const LoginPage = () => {
             marginBottom: 4
           }}
         >
-          FestFlow Digital Desk
+          Cogniz Desk
         </div>
         <h1
           style={{

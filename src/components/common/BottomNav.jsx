@@ -4,21 +4,23 @@ import { CORAL_PRIMARY, CARD_BORDER_LIGHT, TEXT_MUTED_LIGHT } from "../../styles
 import { triggerHaptic } from "../../utils/haptics";
 
 const BottomNav = ({
-  selectedSession = "Off-Stage",
+  selectedSession = "Stage",
   onSelectSession,
+  stageBadgeCount = 0,
   offStageBadgeCount = 0
 }) => {
   const tabs = [
+    {
+      id: "Stage",
+      label: "Stage Desk",
+      icon: "theater",
+      badge: stageBadgeCount > 0 ? stageBadgeCount : null
+    },
     {
       id: "Off-Stage",
       label: "Off-Stage Desk",
       icon: "palette",
       badge: offStageBadgeCount > 0 ? offStageBadgeCount : null
-    },
-    {
-      id: "Stage",
-      label: "Stage",
-      icon: "theater"
     }
   ];
 

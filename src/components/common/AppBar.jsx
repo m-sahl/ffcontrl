@@ -5,7 +5,8 @@ import { triggerHaptic } from "../../utils/haptics";
 
 const AppBar = ({
   currentTab,
-  selectedSession = "Off-Stage",
+  selectedSession = "Stage",
+  activeTab = null,
   subView,
   onBack,
   onOpenSettings,
@@ -16,35 +17,41 @@ const AppBar = ({
   const hasLiveStream = programs.some(p => {
     const isRunning = (p.status || "").toLowerCase() === "running";
     if (!isRunning) return false;
-    // Stage session is currently opening soon / not started
-    if (selectedSession === "Stage") return false;
     return p.session === selectedSession;
   });
 
   // Derive title based on subView or tab
-  let title = "FestFlow Control";
+  let title = "Cogniz Desk";
   let subtitle = "Control Desk";
   let showBackButton = false;
 
+  const tabSuffix = activeTab === "all"
+    ? " • All Programs"
+    : activeTab === "upcoming"
+    ? " • Upcoming"
+    : activeTab === "completed"
+    ? " • Completed & Running"
+    : "";
+
   if (subView === "call-list") {
     title = "Call Sheet";
-    subtitle = "Participant Roster";
+    subtitle = "Cogniz Desk • Roster";
     showBackButton = true;
   } else if (subView === "attendance") {
     title = "Attendance Desk";
-    subtitle = "Check-in Registry";
+    subtitle = "Cogniz Desk • Check-in";
     showBackButton = true;
   } else if (subView === "code-letter") {
     title = "Code Allocation";
     subtitle = "Secret Chest Letters";
     showBackButton = true;
   } else if (selectedSession === "Off-Stage") {
-    title = "Off-Stage Desk";
-    subtitle = hasLiveStream ? "Live Competitions" : "Off-Stage Programs";
+    title = "Cogniz Desk";
+    subtitle = hasLiveStream ? "Live Competitions" : `Off-Stage Desk${tabSuffix}`;
     showBackButton = false;
   } else {
-    title = "Stage Session";
-    subtitle = "Opening Soon";
+    title = "Cogniz Desk";
+    subtitle = hasLiveStream ? "Live Competitions" : `Stage Desk${tabSuffix}`;
     showBackButton = false;
   }
 
@@ -100,23 +107,6 @@ const AppBar = ({
               <Ic name="back" size={16} />
             </button>
           )}
-
-          <div
-            className={`appbar-logo ${showBackButton ? "desktop-hide-when-back" : ""}`}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 11,
-              background: "linear-gradient(135deg, #f14d4d 0%, #d63333 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#ffffff",
-              boxShadow: "0 3px 10px rgba(241, 77, 77, 0.3)"
-            }}
-          >
-            <Ic name="zap" size={18} color="#ffffff" />
-          </div>
 
           <div>
             <div

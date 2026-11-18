@@ -143,6 +143,95 @@ const GlobalStyles = () => (
       box-shadow: 0 6px 20px rgba(241, 77, 77, 0.35);
     }
 
+    /* Mystery Cards Shuffle Animation */
+    @keyframes cardShuffleLeft {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+      }
+      22% {
+        transform: translate3d(-14px, -10px, 0) rotate(-7deg) scale(1.05);
+      }
+      48% {
+        transform: translate3d(10px, 5px, 0) rotate(5deg) scale(0.97);
+      }
+      74% {
+        transform: translate3d(-4px, -3px, 0) rotate(-3deg) scale(1.02);
+      }
+      100% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+      }
+    }
+
+    @keyframes cardShuffleRight {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+      }
+      22% {
+        transform: translate3d(14px, -10px, 0) rotate(7deg) scale(1.05);
+      }
+      48% {
+        transform: translate3d(-10px, 5px, 0) rotate(-5deg) scale(0.97);
+      }
+      74% {
+        transform: translate3d(4px, -3px, 0) rotate(3deg) scale(1.02);
+      }
+      100% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+      }
+    }
+
+    @keyframes spinShuffle {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes questionShimmer {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.22);
+        opacity: 0.85;
+      }
+    }
+
+    .flip-card.shuffling-left {
+      animation: cardShuffleLeft 0.55s cubic-bezier(0.25, 1, 0.5, 1) both;
+      z-index: 2;
+    }
+
+    .flip-card.shuffling-right {
+      animation: cardShuffleRight 0.55s cubic-bezier(0.25, 1, 0.5, 1) both;
+      z-index: 3;
+    }
+
+    .flip-card.shuffling-left .flip-card-front,
+    .flip-card.shuffling-right .flip-card-front {
+      border-color: rgba(241, 77, 77, 0.4);
+      box-shadow: 0 8px 24px rgba(241, 77, 77, 0.16);
+    }
+
+    .flip-card.shuffling-left .mystery-question-mark,
+    .flip-card.shuffling-right .mystery-question-mark {
+      display: inline-block;
+      animation: questionShimmer 0.55s ease-in-out;
+    }
+
+    /* Modal Big Shuffle Button */
+    .btn-modal-shuffle:hover:not(:disabled) {
+      background: rgba(241, 77, 77, 0.12) !important;
+      border-color: rgba(241, 77, 77, 0.45) !important;
+      transform: translateY(-1px);
+    }
+    .btn-modal-shuffle:active:not(:disabled) {
+      transform: scale(0.97) !important;
+    }
+
     /* Leader APK Navigation Button Cards */
     .mobile-nav-btn {
       display: flex;
