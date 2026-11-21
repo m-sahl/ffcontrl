@@ -128,7 +128,7 @@ const LoginPage = () => {
       <AestheticRedLines />
 
       <div
-        className={`anim-pop ${isError ? "anim-shake" : ""}`}
+        className={`anim-pop ${isError ? "anim-shake" : ""} responsive-login-card`}
         style={{
           width: "100%",
           maxWidth: 380,

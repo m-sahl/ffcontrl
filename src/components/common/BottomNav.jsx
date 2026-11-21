@@ -39,9 +39,8 @@ const BottomNav = ({
       }}
     >
       <div
+        className="responsive-bottom-nav"
         style={{
-          width: "100%",
-          maxWidth: 440,
           height: 66,
           background: "rgba(255, 255, 255, 0.97)",
           backdropFilter: "blur(16px)",

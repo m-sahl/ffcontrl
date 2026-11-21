@@ -11,12 +11,7 @@ import { triggerHaptic } from "../utils/haptics";
 const CallListPage = ({ program, participants = [], onBack, onStartRegistration }) => {
   return (
     <div
-      className="anim-fade"
-      style={{
-        maxWidth: 520,
-        margin: "0 auto",
-        padding: "16px 16px 120px"
-      }}
+      className="anim-fade responsive-page"
     >
       {/* Top Header */}
       <div
@@ -124,7 +119,7 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
       </div>
 
       {/* PARTICIPANT LIST */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div className="responsive-roster-grid">
         {participants.length === 0 ? (
           <div
             style={{
@@ -204,12 +199,11 @@ const CallListPage = ({ program, participants = [], onBack, onStartRegistration 
       {/* Sticky Bottom Action */}
       <div className="bottom-bar">
         <button
-          className="btn-mobile-primary"
+          className="btn-mobile-primary responsive-bottom-action"
           onClick={(e) => {
             triggerHaptic("medium");
             if (onStartRegistration) onStartRegistration(e);
           }}
-          style={{ maxWidth: 520, margin: "0 auto" }}
         >
           Start Registration Desk <Ic name="arrowRight" size={16} color="#ffffff" />
         </button>

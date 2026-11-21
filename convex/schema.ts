@@ -1,0 +1,86 @@
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
+
+export default defineSchema({
+  programs: defineTable({
+    id: v.string(),
+    name: v.string(),
+    category: v.string(),
+    type: v.string(),
+    session: v.string(),
+    maxParticipants: v.number(),
+    minParticipants: v.optional(v.number()),
+    date: v.optional(v.string()),
+    status: v.optional(v.string()),
+    results: v.optional(v.any()),
+    sortOrder: v.optional(v.number()),
+    order: v.optional(v.number()),
+    participantsHistory: v.optional(v.any()),
+    codeAllocations: v.optional(v.any()),
+    judgeToken: v.optional(v.string()),
+    codeLetters: v.optional(v.any()),
+    judgeSubmission: v.optional(v.any()),
+    evaluationStatus: v.optional(v.string()),
+    confirmedResults: v.optional(v.any()),
+  }),
+
+  students: defineTable({
+    id: v.string(),
+    name: v.string(),
+    chestNo: v.string(),
+    category: v.string(),
+    groupId: v.string(),
+    groupRole: v.optional(v.string()),
+  }),
+
+  registrations: defineTable({
+    id: v.string(),
+    programId: v.string(),
+    groupId: v.string(),
+    participantIds: v.array(v.string()),
+    adminOverride: v.optional(v.boolean()),
+  }),
+
+  users: defineTable({
+    id: v.string(),
+    name: v.string(),
+    role: v.string(),
+    pin: v.string(),
+    groupId: v.optional(v.string()),
+    color: v.optional(v.string()),
+  }),
+
+  locks: defineTable({
+    type: v.string(),
+    locked: v.boolean(),
+    groupId: v.optional(v.string()),
+    session: v.optional(v.string()),
+  }),
+
+  messages: defineTable({
+    id: v.string(),
+    groupId: v.string(),
+    from: v.string(),
+    fromName: v.optional(v.string()),
+    to: v.optional(v.string()),
+    text: v.string(),
+    timestamp: v.number(),
+    read: v.boolean(),
+    mediaType: v.optional(v.string()),
+    mediaUrl: v.optional(v.string()),
+    deletedFor: v.optional(v.array(v.string())),
+  }),
+
+  logs: defineTable({
+    id: v.string(),
+    user: v.string(),
+    action: v.string(),
+    details: v.string(),
+    timestamp: v.number(),
+  }),
+
+  settings: defineTable({
+    key: v.string(),
+    value: v.any(),
+  }),
+});

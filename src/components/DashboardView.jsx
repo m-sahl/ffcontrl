@@ -51,12 +51,7 @@ const DashboardView = ({ onNavigateToEvents, onOpenCallList }) => {
 
   return (
     <div
-      className="anim-fade"
-      style={{
-        maxWidth: 520,
-        margin: "0 auto",
-        padding: "16px 16px 140px"
-      }}
+      className="anim-fade responsive-page"
     >
       {/* Eyebrow & Page Title (Leader APK Style) */}
       <div style={{ marginBottom: 16 }}>

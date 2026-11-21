@@ -221,12 +221,7 @@ const EventsPage = ({
 
   return (
     <div
-      className="anim-fade"
-      style={{
-        maxWidth: 520,
-        margin: "0 auto",
-        padding: "16px 16px 140px"
-      }}
+      className="anim-fade responsive-page"
     >
       {/* Animated Session Switch Wrapper */}
       <div key={selectedSession} className="anim-session-switch">
@@ -341,18 +336,18 @@ const EventsPage = ({
 
         {/* MAIN EVENTS HUB VIEW */}
         {!activeTab && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="hub-cards-grid">
             {/* Card 1: All Programs */}
-            <button className="mobile-nav-btn" onClick={() => {
+            <button className="hub-card-btn" onClick={() => {
               triggerHaptic("medium");
               setActiveTab("all");
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                 <div
                   style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 13,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
                     background: "#f1f4f9",
                     border: `1px solid ${CARD_BORDER_LIGHT}`,
                     display: "flex",
@@ -363,31 +358,31 @@ const EventsPage = ({
                 >
                   <Ic name="layers" size={20} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    All Programs
-                  </div>
-                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 3 }}>
-                    {sessionPrograms.length} programs in {selectedSession} (All Categories)
-                  </div>
+                <span className="badge badge-slate" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
+                  {sessionPrograms.length}
+                </span>
+              </div>
+              <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
+                <div style={{ fontSize: 16, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  All Programs
+                </div>
+                <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 4, lineHeight: 1.35 }}>
+                  {sessionPrograms.length} programs in {selectedSession} (All Categories)
                 </div>
               </div>
-              <span className="badge badge-slate" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
-                {sessionPrograms.length}
-              </span>
             </button>
 
             {/* Card 2: Upcoming Programs */}
-            <button className="mobile-nav-btn" onClick={() => {
+            <button className="hub-card-btn" onClick={() => {
               triggerHaptic("medium");
               setActiveTab("upcoming");
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                 <div
                   style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 13,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
                     background: "rgba(241, 77, 77, 0.08)",
                     border: "1px solid rgba(241, 77, 77, 0.2)",
                     display: "flex",
@@ -398,31 +393,31 @@ const EventsPage = ({
                 >
                   <Ic name="clock" size={20} color={CORAL_PRIMARY} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    Upcoming Programs
-                  </div>
-                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 3 }}>
-                    {upcomingPrograms.length} pending to call up across all categories
-                  </div>
+                <span className="badge badge-coral" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
+                  {upcomingPrograms.length}
+                </span>
+              </div>
+              <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
+                <div style={{ fontSize: 16, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  Upcoming Programs
+                </div>
+                <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 4, lineHeight: 1.35 }}>
+                  {upcomingPrograms.length} pending to call up across all categories
                 </div>
               </div>
-              <span className="badge badge-coral" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
-                {upcomingPrograms.length}
-              </span>
             </button>
 
             {/* Card 3: Completed & Running Programs */}
-            <button className="mobile-nav-btn" onClick={() => {
+            <button className="hub-card-btn" onClick={() => {
               triggerHaptic("medium");
               setActiveTab("completed");
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                 <div
                   style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 13,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
                     background: "rgba(16, 185, 129, 0.08)",
                     border: "1px solid rgba(16, 185, 129, 0.2)",
                     display: "flex",
@@ -433,18 +428,18 @@ const EventsPage = ({
                 >
                   <Ic name="checkCircle" size={20} color={EMERALD_SUCCESS} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    Completed & Running
-                  </div>
-                  <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 3 }}>
-                    {runningPrograms.length} running • {completedPrograms.length} finished
-                  </div>
+                <span className="badge badge-emerald" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
+                  {runningPrograms.length + completedPrograms.length}
+                </span>
+              </div>
+              <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
+                <div style={{ fontSize: 16, fontWeight: 750, color: TEXT_PRIMARY_LIGHT, letterSpacing: "-0.25px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  Completed & Running
+                </div>
+                <div style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, fontWeight: 500, marginTop: 4, lineHeight: 1.35 }}>
+                  {runningPrograms.length} running • {completedPrograms.length} finished
                 </div>
               </div>
-              <span className="badge badge-emerald" style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 999, flexShrink: 0 }}>
-                {runningPrograms.length + completedPrograms.length}
-              </span>
             </button>
           </div>
         )}
@@ -572,21 +567,16 @@ const EventsPage = ({
 
             {/* CATEGORY FILTER PILLS ROW — Always Available on All Sub-Pages (Upcoming, All, Completed) */}
             <div
-              className="no-scrollbar"
+              className="no-scrollbar category-chips-row"
               onWheel={(e) => {
                 if (e.deltaY !== 0) {
                   e.currentTarget.scrollLeft += e.deltaY;
                 }
               }}
               style={{
-                display: "flex",
-                gap: 8,
-                marginBottom: 14,
-                overflowX: "auto",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
-                WebkitOverflowScrolling: "touch",
-                paddingBottom: 2
+                WebkitOverflowScrolling: "touch"
               }}
             >
               {CATEGORIES.map(cat => {
@@ -639,7 +629,7 @@ const EventsPage = ({
 
             {/* TAB 1: ALL PROGRAMS */}
             {activeTab === "all" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="responsive-program-grid">
                 {filteredAllPrograms.length === 0 ? (
                   <div
                     style={{
@@ -812,7 +802,7 @@ const EventsPage = ({
                           </div>
 
                           {/* Category Program Cards */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                          <div className="responsive-program-grid">
                             {catProgs.map(p => {
                               const participants = getParticipantsForProgram(p.id);
                               return (
@@ -913,7 +903,7 @@ const EventsPage = ({
                   </div>
                 ) : (
                   // Filtered by specific category or search query
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div className="responsive-program-grid">
                     {filteredUpcomingPrograms.map(p => {
                       const participants = getParticipantsForProgram(p.id);
                       const catColor = getCategoryColor(p.category);
@@ -1016,7 +1006,7 @@ const EventsPage = ({
 
             {/* TAB 3: COMPLETED & RUNNING */}
             {activeTab === "completed" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="responsive-program-grid">
                 {filteredCompletedPrograms.length === 0 ? (
                   <div
                     style={{
