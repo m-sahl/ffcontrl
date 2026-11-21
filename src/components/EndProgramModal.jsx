@@ -26,40 +26,21 @@ const EndProgramModal = ({ program, isOpen, onClose, onConfirm }) => {
 
   return createPortal(
     <div
-      className="anim-fade"
+      className="anim-fade responsive-modal-overlay"
       onClick={handleClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(15, 23, 42, 0.45)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        zIndex: 150,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center"
-      }}
     >
       <div
-        className="anim-pop"
+        className="anim-pop responsive-modal-card"
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "100%",
-          maxWidth: 500,
-          background: "#ffffff",
-          borderTopLeftRadius: 26,
-          borderTopRightRadius: 26,
-          borderTop: `1.2px solid ${CARD_BORDER_LIGHT}`,
           padding: "16px 20px 28px",
-          boxShadow: "0 -12px 36px rgba(15, 23, 42, 0.12)",
-          display: "flex",
-          flexDirection: "column",
           gap: 16,
           textAlign: "center"
         }}
       >
         {/* Drag handle */}
         <div
+          className="responsive-modal-handle"
           style={{
             width: 40,
             height: 4,

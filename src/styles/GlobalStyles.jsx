@@ -395,22 +395,306 @@ const GlobalStyles = () => (
       scrollbar-width: none !important;
     }
 
-    /* Responsive UI Back Button rules:
-       On mobile viewports (<= 768px), UI back buttons are hidden to maximize screen space
-       and allow system navigation (hardware back button, edge swipe gestures).
-       On desktop viewports (> 768px), UI back buttons remain visible for mouse interaction. */
-    @media (max-width: 768px) {
-      .ui-back-btn {
-        display: none !important;
+    /* ========================================================
+       RESPONSIVE DESIGN SYSTEM (Mobile, Tab screens, Desktop)
+       Tab screens: 640px - 1024px (iPad, Android Tabs, etc.)
+       ======================================================== */
+
+    /* UI Back Button: Always accessible across mobile and tab screens */
+    .ui-back-btn {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .ui-back-btn:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+    }
+    .ui-back-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Page container: fluid and comfortably scaled on tab screens */
+    .responsive-page {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 16px 16px 140px;
+      box-sizing: border-box;
+      transition: max-width 0.2s ease, padding 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .responsive-page {
+        max-width: 768px;
+        padding: 20px 24px 140px;
       }
-      .desktop-hide-when-back {
-        display: flex !important;
+    }
+    @media (min-width: 840px) {
+      .responsive-page {
+        max-width: 880px;
+        padding: 24px 28px 140px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .responsive-page {
+        max-width: 980px;
+        padding: 28px 32px 140px;
       }
     }
 
-    @media (min-width: 769px) {
-      .desktop-hide-when-back {
+    /* Header container inside sticky AppBar */
+    .app-header-container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 56px;
+      box-sizing: border-box;
+      transition: max-width 0.2s ease, padding 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .app-header-container {
+        max-width: 768px;
+        padding: 12px 24px;
+        min-height: 60px;
+      }
+    }
+    @media (min-width: 840px) {
+      .app-header-container {
+        max-width: 880px;
+        padding: 12px 28px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .app-header-container {
+        max-width: 980px;
+        padding: 14px 32px;
+      }
+    }
+
+    /* Responsive bottom action button container inside sticky bottom-bar */
+    .responsive-bottom-action {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      transition: max-width 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .responsive-bottom-action {
+        max-width: 768px;
+      }
+    }
+    @media (min-width: 840px) {
+      .responsive-bottom-action {
+        max-width: 880px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .responsive-bottom-action {
+        max-width: 980px;
+      }
+    }
+
+    /* Floating bottom navigation pill */
+    .responsive-bottom-nav {
+      width: 100%;
+      max-width: 440px;
+      transition: max-width 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .responsive-bottom-nav {
+        max-width: 540px;
+      }
+    }
+    @media (min-width: 840px) {
+      .responsive-bottom-nav {
+        max-width: 580px;
+      }
+    }
+
+    /* Events Hub Cards Grid (All Programs, Upcoming, Completed & Running) */
+    .hub-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .hub-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+    }
+
+    /* Hub Card Button */
+    .hub-card-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #0f172a;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+    }
+    .hub-card-btn:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+      transform: translateY(-1px);
+    }
+    .hub-card-btn:active {
+      transform: scale(0.985);
+      background: #f8fafc;
+    }
+    @media (min-width: 640px) {
+      .hub-card-btn {
+        flex-direction: column;
+        align-items: flex-start;
+        justifyContent: space-between;
+        min-height: 144px;
+        padding: 18px 20px;
+        gap: 14px;
+      }
+    }
+
+    /* Program cards responsive 2-column grid on tab screens */
+    .responsive-program-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .responsive-program-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+    }
+
+    /* Candidate / Roster list responsive 2-column grid on tab screens */
+    .responsive-roster-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .responsive-roster-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+    }
+
+    /* Category filter chips row */
+    .category-chips-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 16px;
+    }
+    @media (min-width: 640px) {
+      .category-chips-row {
+        flex-wrap: wrap;
+        gap: 10px;
+        overflow-x: visible;
+      }
+    }
+
+    /* Modal Backdrop & Card on Tab Screens */
+    .responsive-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 150;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .responsive-modal-overlay {
+        align-items: center;
+        padding: 24px;
+      }
+    }
+
+    .responsive-modal-card {
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      background: #ffffff;
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      border-top: 1.2px solid #e2e8f0;
+      box-shadow: 0 -12px 36px rgba(15, 23, 42, 0.14);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (min-width: 640px) {
+      .responsive-modal-card {
+        max-width: 580px;
+        border-radius: 24px !important;
+        border: 1.2px solid #e2e8f0 !important;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+        max-height: 85vh;
+      }
+      .responsive-modal-handle {
         display: none !important;
+      }
+    }
+
+    .responsive-modal-card-wide {
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      background: #ffffff;
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      border-top: 1.2px solid #e2e8f0;
+      box-shadow: 0 -12px 36px rgba(15, 23, 42, 0.14);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (min-width: 640px) {
+      .responsive-modal-card-wide {
+        max-width: 720px;
+        border-radius: 24px !important;
+        border: 1.2px solid #e2e8f0 !important;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+        max-height: 85vh;
+      }
+    }
+    @media (min-width: 840px) {
+      .responsive-modal-card-wide {
+        max-width: 800px;
+      }
+    }
+
+    /* Responsive login card on tab screens */
+    .responsive-login-card {
+      width: 100%;
+      max-width: 380px;
+      transition: max-width 0.2s ease, padding 0.2s ease;
+    }
+    @media (min-width: 640px) {
+      .responsive-login-card {
+        max-width: 440px;
+        padding: 44px 36px 38px !important;
       }
     }
   `}</style>

@@ -27,36 +27,17 @@ const SettingsModal = ({ isOpen, onClose, onLockDesk }) => {
 
   return createPortal(
     <div
-      className="anim-fade"
+      className="anim-fade responsive-modal-overlay"
       onClick={handleClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(15, 23, 42, 0.45)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        zIndex: 150,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-        padding: "0 16px 12px"
-      }}
     >
       <div
-        className="anim-pop"
+        className="anim-pop responsive-modal-card"
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "100%",
-          maxWidth: 500,
           background: "rgba(255, 255, 255, 0.98)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
-          borderRadius: 22,
-          border: `1px solid ${CARD_BORDER_LIGHT}`,
           padding: "18px 20px 20px",
-          boxShadow: "0 12px 36px rgba(15, 23, 42, 0.16), 0 2px 8px rgba(0, 0, 0, 0.04)",
-          display: "flex",
-          flexDirection: "column",
           gap: 16
         }}
       >

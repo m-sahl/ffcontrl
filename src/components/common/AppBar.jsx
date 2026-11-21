@@ -69,15 +69,7 @@ const AppBar = ({
       }}
     >
       <div
-        style={{
-          maxWidth: 520,
-          margin: "0 auto",
-          padding: "10px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          minHeight: 56
-        }}
+        className="app-header-container"
       >
         {/* Left Section: Back button (Desktop only when showBackButton) or Logo + Title */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

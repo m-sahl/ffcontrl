@@ -97,12 +97,7 @@ const CodeLetterPage = ({
 
   return (
     <div
-      className="anim-fade"
-      style={{
-        maxWidth: 520,
-        margin: "0 auto",
-        padding: "16px 16px 120px"
-      }}
+      className="anim-fade responsive-page"
     >
       {/* Top Bar */}
       <div
@@ -212,7 +207,7 @@ const CodeLetterPage = ({
       </div>
 
       {/* PARTICIPANT ROWS */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div className="responsive-roster-grid">
         {presentParticipants.length === 0 ? (
           <div
             style={{
@@ -327,15 +322,13 @@ const CodeLetterPage = ({
       {/* Sticky Bottom Action */}
       <div className="bottom-bar">
         <button
-          className="btn-mobile-primary"
+          className="btn-mobile-primary responsive-bottom-action"
           onClick={(e) => {
             triggerHaptic("success");
             if (onFinish) onFinish(e);
           }}
           disabled={!isAllAssigned}
           style={{
-            maxWidth: 520,
-            margin: "0 auto",
             background: isAllAssigned
               ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
               : "#cbd5e1",
